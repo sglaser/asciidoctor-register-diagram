@@ -48,3 +48,5 @@ pkg
 # For rubinius:
 #*.rbc
 .idea
+*.log
+*.out
