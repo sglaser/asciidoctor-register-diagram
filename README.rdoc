@@ -1,6 +1,6 @@
 = asciidoctor-regpict
 
-Description goes here.
+Asciidoctor plugin to draw register diagrams, register blocks, and messages.
 
 == Contributing to asciidoctor-regpict
  
