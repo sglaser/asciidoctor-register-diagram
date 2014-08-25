@@ -17,10 +17,10 @@ Jeweler::Tasks.new do |gem|
   gem.name = "asciidoctor-regpict"
   gem.homepage = "http://github.com/sglaser/asciidoctor-regpict"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
-  gem.email = "sglaser@sglaser.com"
-  gem.authors = ["Steve Glaser"]
+  gem.summary = %Q{asciidoctor plugin to draw register diagrams, register blocks, and messages}
+  gem.description = %Q{asciidoctor plugin that draws register diagrams, register blocks, and messages from a test description.}
+  gem.email = ["sglaser@sglaser.com", "sglaser@nvidia.com"]
+  gem.authors = ["Steve Glaser", "Nvidia Inc."]
   # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new
