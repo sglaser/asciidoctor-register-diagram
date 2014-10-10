@@ -1,0 +1,5 @@
+= Asciidoctor-register-diagram Changelog
+
+== 0.1.0.preview.1
+
+  * Initial Version

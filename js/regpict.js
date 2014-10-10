@@ -1,5 +1,5 @@
 /*globals define */
-/*jslint plusplus:true, white:true, vars:true, regexp:true, nomen:true */
+/*jslint plusplus:true, white:true, vars:true, regexp:true, nomen:true, vars:true */
 /*jshint jquery:true, browser:true, funcscope:true, laxbreak:true, laxcomma:true */
 
 // Module core/regpict
@@ -8,10 +8,10 @@
 // svg diagram that represents the fields in the table.
 define(
     ["text!regpict.css",
-     "jquery",
+        "jquery",
         //     "core/utils",
-     "jquery-svg"],
-    function(css) {
+        "jquery-svg"],
+    function (css) {
         "use strict";
 
         function pget(obj, prop, def) {
@@ -40,6 +40,7 @@ define(
             var visibleLSB = Number(pget(reg, "visibleLSB", 0));
             var visibleMSB = Number(pget(reg, "visibleMSB", width));
             var fields = pget(reg, "fields", { }); // default to empty register
+            var index, item, i, j, bitarray;
 
             if (visibleMSB < 0) {
                 visibleMSB = 0;
@@ -57,9 +58,9 @@ define(
             //console.log("draw_regpict: fields=" + fields.toString());
 
             // sanitize field array to avoid subsequent problems
-            for (var index in fields) {
+            for (index in fields) {
                 if (fields.hasOwnProperty(index)) {
-                    var item = fields[index];
+                    item = fields[index];
                     if (item.hasOwnProperty("msb") && !item.hasOwnProperty("lsb")) {
                         item.lsb = item.msb;
                     }
@@ -83,12 +84,11 @@ define(
                 }
             }
 
-            var bitarray = [];  // Array indexed by bit # in register range 0:width
+            bitarray = [];  // Array indexed by bit # in register range 0:width
             // field[bitarray[N]] contains bit N
             // bitarray[N] == -1 for unused bits
             // bitarray[N] == 1000 for first bit outside register width
 
-            var i, j;
             bitarray[width] = 1000; //???
             for (i = 0; i < width; i++) {
                 bitarray[i] = null;
@@ -111,13 +111,13 @@ define(
                         index = index + "_" + lsb;  // _unused_msb_lsb
                     }
                     fields[index] = {
-                        "msb":      (i - 1),
-                        "lsb":      lsb,
-                        "name":     ((i - lsb) * 2 - 1) >=
-                                    defaultUnused.length ? defaultUnused : defaultUnused[0].toUpperCase(), // use full name if if fits, else use 1st char
-                        "attr":     defaultUnused.toLowerCase(),   // attribute is name
+                        "msb": (i - 1),
+                        "lsb": lsb,
+                        "name": ((i - lsb) * 2 - 1) >=
+                            defaultUnused.length ? defaultUnused : defaultUnused[0].toUpperCase(), // use full name if if fits, else use 1st char
+                        "attr": defaultUnused.toLowerCase(),   // attribute is name
                         "isUnused": true,
-                        "value":    ""
+                        "value": ""
                     };
                     for (j = lsb; j < i; j++) {
                         bitarray[j] = index;
@@ -133,20 +133,20 @@ define(
             // x position of left edge of bit i
             function leftOf(i) {
                 if (i > visibleMSB) {
-                    return figLeft + 0;
+                    return figLeft;
                 } else if (i >= visibleLSB) {
                     return figLeft + cellWidth * (width - i - 0.5 - (width - visibleMSB));
                 } else if (i > 0) {
                     return figLeft + cellWidth * (width - visibleLSB - 1 - (width - visibleMSB));
                 } else {
-                    return figLeft + cellWidth * (width -  visibleLSB - i - 1 - (width - visibleMSB));
+                    return figLeft + cellWidth * (width - visibleLSB - i - 1 - (width - visibleMSB));
                 }
             }
 
             // x position of right edge of bit i
             function rightOf(i) {
                 if (i > visibleMSB) {
-                    return figLeft + 0;
+                    return figLeft;
                 } else if (i >= visibleLSB) {
                     return figLeft + cellWidth * (width - i + 0.5 - (width - visibleMSB));
                 } else if (i > 0) {
@@ -159,7 +159,7 @@ define(
             // x position of middle of bit i
             function middleOf(i) {
                 if (i > visibleMSB) {
-                    return figLeft + 0;
+                    return figLeft;
                 } else if (i >= visibleLSB) {
                     return figLeft + cellWidth * (width - i - (width - visibleMSB));
                 } else if (i > 0) {
@@ -173,101 +173,102 @@ define(
             var nextBitLine = cellTop + cellHeight + 20; //76;
             var bitLineCount = 0;
             var max_text_width = 0;
+            var b, gAddClass;
 
-            for (var b = 0; b < width; b++) {
+            for (b = 0; b < width; b++) {
                 for (i in fields) {
                     if (fields.hasOwnProperty(i)) {
                         f = fields[i];
-                        var gAddClass = ["regFieldInternal", "regAttr_" + f.attr, "regLink"];
+                        gAddClass = ["regFieldInternal", "regAttr_" + f.attr, "regLink"];
                         if (b === f.lsb) {
                             g = svg.group();
                             //var bitnum_width;
                             if (f.lsb === f.msb) {
                                 text = svg.text(g, middleOf(f.lsb), cellTop - 4,
-                                                svg.createText().string(f.lsb), {
+                                    svg.createText().string(f.lsb), {
                                         "class_": "regBitNumMiddle"
                                     });
                                 /*console.log("bitnum-middle " + f.lsb + " at x=" + middleOf(f.lsb) + " y=" + (cellTop - 4));
-                                bitnum_width = text.clientWidth;
-                                if (bitnum_width === 0) {
-                                    // bogus fix to guess width when clientWidth is 0 (e.g. IE10)
-                                    bitnum_width = String(f.lsb).length * 4; // Assume 4px per character on average
-                                }
-                                if ((bitnum_width + 2) > cellWidth) {
-                                    svg.change(text,
-                                               {
-                                                   x: middleOf(f.lsb),
-                                                   y: cellTop,
-                                                   transform: "rotate(270, " +
-                                                              middleOf(f.lsb) + ", " +
-                                                              (cellTop - 4) + ")",
-                                                   "class_": "regBitNumStart"
-                                               });
-                                    console.log("bitnum-middle " + f.lsb + " at x=" + middleOf(f.lsb) + " y=" + (cellTop - 4) + " rotate=270");
-                                }*/
+                                 bitnum_width = text.clientWidth;
+                                 if (bitnum_width === 0) {
+                                 // bogus fix to guess width when clientWidth is 0 (e.g. IE10)
+                                 bitnum_width = String(f.lsb).length * 4; // Assume 4px per character on average
+                                 }
+                                 if ((bitnum_width + 2) > cellWidth) {
+                                 svg.change(text,
+                                 {
+                                 x: middleOf(f.lsb),
+                                 y: cellTop,
+                                 transform: "rotate(270, " +
+                                 middleOf(f.lsb) + ", " +
+                                 (cellTop - 4) + ")",
+                                 "class_": "regBitNumStart"
+                                 });
+                                 console.log("bitnum-middle " + f.lsb + " at x=" + middleOf(f.lsb) + " y=" + (cellTop - 4) + " rotate=270");
+                                 }*/
                             } else {
                                 if (f.lsb < visibleLSB) {
                                     gAddClass.push("regFieldOverflowLSB");
                                     text = svg.text(g, rightOf(f.lsb) + 2, cellTop - 4,
-                                                    svg.createText().string("... " + f.lsb), {
+                                        svg.createText().string("... " + f.lsb), {
                                             "class_": "regBitNumEnd"
                                         });
 //                                    console.log("bitnum-right " + f.lsb + " at x=" + rightOf(f.lsb) + 2 + " y=" + (cellTop - 4));
                                 } else {
                                     text = svg.text(g, rightOf(f.lsb) - 2, cellTop - 4,
-                                                    svg.createText().string(f.lsb), {
+                                        svg.createText().string(f.lsb), {
                                             "class_": "regBitNumEnd"
                                         });
 //                                    console.log("bitnum-right " + f.lsb + " at x=" + rightOf(f.lsb) - 2 + " y=" + (cellTop - 4));
                                 }
                                 /*bitnum_width = text.clientWidth;
-                                if (bitnum_width === 0) {
-                                    // bogus fix to guess width when clientWidth is 0 (e.g. IE10)
-                                    bitnum_width = String(f.lsb).length * 4; // Assume 4px per character on average
-                                }
-                                if ((bitnum_width + 2) > ((leftOf(f.msb) - rightOf(f.lsb)) / 2)) {
-                                     svg.change(text,
-                                               {
-                                                   x: middleOf(f.lsb),
-                                                   y: cellTop,
-                                                   transform: "rotate(270, " +
-                                                              rightOf(f.lsb) + ", " +
-                                                              (cellTop - 4) + ")",
-                                                   "class_": "regBitNumStart"
-                                               });
-                                    console.log("bitnum-right " + f.lsb + " at x=" + rightOf(f.lsb) + " y=" + (cellTop - 4) + " rotate=270");
-                                }*/
+                                 if (bitnum_width === 0) {
+                                 // bogus fix to guess width when clientWidth is 0 (e.g. IE10)
+                                 bitnum_width = String(f.lsb).length * 4; // Assume 4px per character on average
+                                 }
+                                 if ((bitnum_width + 2) > ((leftOf(f.msb) - rightOf(f.lsb)) / 2)) {
+                                 svg.change(text,
+                                 {
+                                 x: middleOf(f.lsb),
+                                 y: cellTop,
+                                 transform: "rotate(270, " +
+                                 rightOf(f.lsb) + ", " +
+                                 (cellTop - 4) + ")",
+                                 "class_": "regBitNumStart"
+                                 });
+                                 console.log("bitnum-right " + f.lsb + " at x=" + rightOf(f.lsb) + " y=" + (cellTop - 4) + " rotate=270");
+                                 }*/
                                 if (f.msb > visibleMSB) {
                                     gAddClass.push("regFieldOverflowMSB");
                                     text = svg.text(g, leftOf(f.msb) - 2, cellTop - 4,
-                                                    svg.createText().string(f.msb + " ..."), {
+                                        svg.createText().string(f.msb + " ..."), {
                                             "class_": "regBitNumStart"
                                         });
 //                                    console.log("bitnum-left " + f.lsb + " at x=" + leftOf(f.lsb) - 2 + " y=" + (cellTop - 4));
                                 } else {
                                     text = svg.text(g, leftOf(f.msb) + 2, cellTop - 4,
-                                             text = svg.createText().string(f.msb), {
+                                        svg.createText().string(f.msb), {
                                             "class_": "regBitNumStart"
                                         });
 //                                    console.log("bitnum-left " + f.lsb + " at x=" + leftOf(f.lsb) + 2 + " y=" + (cellTop - 4));
                                 }
                                 /*bitnum_width = text.clientWidth;
-                                if (bitnum_width === 0) {
-                                    // bogus fix to guess width when clientWidth is 0 (e.g. IE10)
-                                    bitnum_width = String(f.msb).length * 4; // Assume 4px per character on average
-                                }
-                                if ((bitnum_width + 2) > ((leftOf(f.msb) - rightOf(f.lsb)) / 2)) {
-                                    svg.change(text,
-                                               {
-                                                   x: middleOf(f.msb),
-                                                   y: cellTop,
-                                                   transform: "rotate(270, " +
-                                                              leftOf(f.msb) + ", " +
-                                                              (cellTop - 4) + ")",
-                                                   "class_": "regBitNumStart"
-                                               });
-                                    console.log("bitnum-left " + f.lsb + " at x=" + leftOf(f.lsb) + " y=" + (cellTop - 4) + " rotate=270");
-                                }*/
+                                 if (bitnum_width === 0) {
+                                 // bogus fix to guess width when clientWidth is 0 (e.g. IE10)
+                                 bitnum_width = String(f.msb).length * 4; // Assume 4px per character on average
+                                 }
+                                 if ((bitnum_width + 2) > ((leftOf(f.msb) - rightOf(f.lsb)) / 2)) {
+                                 svg.change(text,
+                                 {
+                                 x: middleOf(f.msb),
+                                 y: cellTop,
+                                 transform: "rotate(270, " +
+                                 leftOf(f.msb) + ", " +
+                                 (cellTop - 4) + ")",
+                                 "class_": "regBitNumStart"
+                                 });
+                                 console.log("bitnum-left " + f.lsb + " at x=" + leftOf(f.lsb) + " y=" + (cellTop - 4) + " rotate=270");
+                                 }*/
                             }
                             if (f.lsb >= visibleLSB) {
                                 svg.line(g,
@@ -288,7 +289,7 @@ define(
                                 gAddClass.push("regFieldUnused");
                             }
                             svg.rect(g, leftOf(f.msb), cellTop, rightOf(f.lsb) - leftOf(f.msb), cellHeight,
-                                     0, 0, {
+                                0, 0, {
                                     "class_": "regFieldBox"
                                 });
                             for (j = f.lsb + 1; j <= f.msb; j++) {
@@ -300,13 +301,13 @@ define(
                                 }
                             }
                             text = svg.text(g, (leftOf(f.msb) + rightOf(f.lsb)) / 2, cellTop - bitWidthPos,
-                                            svg.createText().string((f.msb === f.lsb)
-                                                                        ? "1 bit"
-                                                                        : (f.msb - f.lsb + 1) + " bits"),
-                                            { "class_": "regBitWidth" });
+                                svg.createText().string((f.msb === f.lsb)
+                                    ? "1 bit"
+                                    : (f.msb - f.lsb + 1) + " bits"),
+                                { "class_": "regBitWidth" });
                             text = svg.text(g, (leftOf(f.msb) + rightOf(f.lsb)) / 2, cellTop + cellNameTop,
-                                            svg.createText().string(f.name),
-                                            { "class_": "regFieldName" });
+                                svg.createText().string(f.name),
+                                { "class_": "regFieldName" });
                             if ((!f.isUnused) && (f.lsb <= visibleMSB) && (f.msb >= visibleLSB)) {
                                 var $temp_dom = $("<span></span>").prependTo(divsvg);
                                 var unique_id = $temp_dom.makeID("regpict", (f.id ? f.id : (figName + "-" + f.name)));
@@ -317,24 +318,24 @@ define(
                                 if (Array.isArray(f.value) && f.value.length === (f.msb - f.lsb + 1)) {
                                     for (i = 0; i < f.value.length; ++i) {
                                         svg.text(g, (leftOf(f.lsb + i) + rightOf(f.lsb + i)) / 2,
-                                                 cellTop + cellBitValueTop,
-                                                 svg.createText().string(f.value[i]),
-                                                 {
-                                                     "class_": ("regFieldValue regFieldBitValue" +
-                                                                " regFieldBitValue-" + i.toString() +
-                                                                ((i === (f.value.length - 1)) ?
-                                                                    " regFieldBitValue-msb" : ""))
-                                                 });
+                                                cellTop + cellBitValueTop,
+                                            svg.createText().string(f.value[i]),
+                                            {
+                                                "class_": ("regFieldValue regFieldBitValue" +
+                                                    " regFieldBitValue-" + i.toString() +
+                                                    ((i === (f.value.length - 1)) ?
+                                                        " regFieldBitValue-msb" : ""))
+                                            });
                                     }
                                 } else if ((typeof(f.value) === "string") || (f.value instanceof String)) {
                                     svg.text(g, (leftOf(f.msb) + rightOf(f.lsb)) / 2,
-                                             cellTop + (f.msb === f.lsb ? cellBitValueTop : cellValueTop),
-                                             svg.createText().string(f.value),
-                                             { "class_": "regFieldValue" });
+                                            cellTop + (f.msb === f.lsb ? cellBitValueTop : cellValueTop),
+                                        svg.createText().string(f.value),
+                                        { "class_": "regFieldValue" });
                                 } else {
                                     svg.text(g, (leftOf(f.msb) + rightOf(f.lsb)) / 2, cellTop + cellValueTop,
-                                             svg.createText().string("INVALID VALUE"),
-                                             { "class_": "svg_error" });
+                                        svg.createText().string("INVALID VALUE"),
+                                        { "class_": "svg_error" });
                                 }
                             }
                             var text_width = text.clientWidth;
@@ -423,22 +424,22 @@ define(
                 scale = maxFigWidth / max_text_width;
             }
             svg.configure({
-                              height:      (scale * nextBitLine) + "px",
-                              width:       (scale * max_text_width) + "px",
-                              viewBox:     "0 0 " + max_text_width + " " + nextBitLine,
-                              "xmlns:xlink": "http://www.w3.org/1999/xlink"
-                          });
+                height: (scale * nextBitLine) + "px",
+                width: (scale * max_text_width) + "px",
+                viewBox: "0 0 " + max_text_width + " " + nextBitLine,
+                "xmlns:xlink": "http://www.w3.org/1999/xlink"
+            });
         }
 
         return {
-            run: function(conf, doc, cb, msg) {
+            run: function (conf, doc, cb, msg) {
                 msg.pub("start", "core/regpict");
                 if (!(conf.noReSpecCSS)) {
                     $(doc).find("head link").first().before($("<style></style>").text(css));
                 }
                 var figNum = 1;
                 $("figure.register", doc).each(
-                    function() {
+                    function () {
                         var parsed, $tbody, pattern, bitpattern;
                         var $fig = $(this);
                         var json = { };
@@ -496,7 +497,7 @@ define(
                             json.register = temp;
                         }
 
-                        $("pre.json,div.json,span.json", $fig).each(function() {
+                        $("pre.json,div.json,span.json", $fig).each(function () {
                             $.extend(true, json, $.parseJSON(this.textContent));
                             $(this).hide();
                         });
@@ -505,7 +506,7 @@ define(
                             parsed = { fields: { } };
                             $tbody = $(json.table + " tbody", doc).first();
                             //console.log("pcisig_reg: tbody='" + $tbody.get(0).outerHTML);
-                            $tbody.children().each(function() {
+                            $tbody.children().each(function () {
                                 var $td = $(this).children();
                                 if ($td.length >= 3) {
                                     var bits = $td[0].textContent;
@@ -539,9 +540,9 @@ define(
                                     var isUnused = !!unusedAttr.test(attr);
 //                                    console.log("field: " + fieldName + " bits=\"" + bits + "\"  match=" + match + "\" lsb=" + lsb + " msb=" + msb + "  attr=" + attr + "  isUnused=" + isUnused);
                                     parsed.fields[fieldName] = {
-                                        msb:      msb,
-                                        lsb:      lsb,
-                                        attr:     attr,
+                                        msb: msb,
+                                        lsb: lsb,
+                                        attr: attr,
                                         isUnused: isUnused
                                     };
                                 }
@@ -555,69 +556,69 @@ define(
                             json.hasOwnProperty("register")) {
                             parsed = { fields: { } };
                             pattern = new RegExp("^#\\s*define\\s+(" + json.register +
-                                                 ")(\\w*)\\s+(\\S*)\\s*/\\*\\s*(\\S\\S\\S\\S\\S)\\s*\\*/\\s*$");
+                                ")(\\w*)\\s+(\\S*)\\s*/\\*\\s*(\\S\\S\\S\\S\\S)\\s*\\*/\\s*$");
                             bitpattern = /(\d+):(\d+)/;
                             if (!!conf.ajaxIsLocal) {
                                 $.ajaxSetup({ isLocal: true});
                             }
                             conf.ajaxIsLocal = false;
                             $.ajax({
-                                       dataType: "text",
-                                       url:      json.href,
-                                       async:    false,
-                                       success:  function(data) {
-                                           if (data) {
-                                               var lines = data.split(/\n/);
-                                               for (var i = 0; i < lines.length; i++) {
-                                                   var match = pattern.exec(lines[i]);
-                                                   if (match) {
-                                                       if (!json.hasOwnProperty("width")) {
-                                                           if ((match[2] === "") &&
-                                                               (match[4].substr(4, 1) === "R")) {
-                                                               var w = match[4].substr(3, 1);
-                                                               if (w === "2") {
-                                                                   parsed.width = 16;
-                                                               } else if (w === "4") {
-                                                                   parsed.width = 32;
-                                                               } else if (w === "8") {
-                                                                   parsed.width = 64;
-                                                               } else {
-                                                                   parsed.width = 32;
-                                                               }
-                                                           }
-                                                       }
-                                                       if ((match[2] !== "") &&
-                                                           (match[4].substr(4, 1) === "F")) {
-                                                           var bits = bitpattern.exec(match[3]);
-                                                           if (bits) {
-                                                               parsed.fields[match[1] + match[2]] = {
-                                                                   msb:  Number(bits[1]),
-                                                                   lsb:  Number(bits[2]),
-                                                                   attr: match[4].substr(0, 2)
-                                                                             .replace(/[^-r][^-w]/i, "other")
-                                                                             .replace(/rw/i, "rw")
-                                                                             .replace(/r-/i, "ro")
-                                                                             .replace(/-w/i, "wo")};
-                                                           } else {
-                                                               msg.pub("error",
-                                                                       "Unknown field width " + match[0]);
-                                                           }
-                                                       }
-                                                   }
-                                               }
-                                               //console.log("parsed=" + JSON.stringify(parsed, null, 2));
-                                               $.extend(true, json, parsed);
-                                               //console.log("json=" + JSON.stringify(json, null, 2));
-                                           }
-                                       },
-                                       error:    function(xhr, status, error) {
-                                           msg.pub("error",
-                                                   "regpict/nv_refman: Error including file data-href=" +
-                                                   json.href +
-                                                   " data-register=" + json.register + " : " +
-                                                   status + " (" + error + ")");
-                                       }
-                                   });
+                                dataType: "text",
+                                url: json.href,
+                                async: false,
+                                success: function (data) {
+                                    if (data) {
+                                        var lines = data.split(/\n/);
+                                        for (var i = 0; i < lines.length; i++) {
+                                            var match = pattern.exec(lines[i]);
+                                            if (match) {
+                                                if (!json.hasOwnProperty("width")) {
+                                                    if ((match[2] === "") &&
+                                                        (match[4].substr(4, 1) === "R")) {
+                                                        var w = match[4].substr(3, 1);
+                                                        if (w === "2") {
+                                                            parsed.width = 16;
+                                                        } else if (w === "4") {
+                                                            parsed.width = 32;
+                                                        } else if (w === "8") {
+                                                            parsed.width = 64;
+                                                        } else {
+                                                            parsed.width = 32;
+                                                        }
+                                                    }
+                                                }
+                                                if ((match[2] !== "") &&
+                                                    (match[4].substr(4, 1) === "F")) {
+                                                    var bits = bitpattern.exec(match[3]);
+                                                    if (bits) {
+                                                        parsed.fields[match[1] + match[2]] = {
+                                                            msb: Number(bits[1]),
+                                                            lsb: Number(bits[2]),
+                                                            attr: match[4].substr(0, 2)
+                                                                .replace(/[^-r][^-w]/i, "other")
+                                                                .replace(/rw/i, "rw")
+                                                                .replace(/r-/i, "ro")
+                                                                .replace(/-w/i, "wo")};
+                                                    } else {
+                                                        msg.pub("error",
+                                                                "Unknown field width " + match[0]);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        //console.log("parsed=" + JSON.stringify(parsed, null, 2));
+                                        $.extend(true, json, parsed);
+                                        //console.log("json=" + JSON.stringify(json, null, 2));
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    msg.pub("error",
+                                            "regpict/nv_refman: Error including file data-href=" +
+                                            json.href +
+                                            " data-register=" + json.register + " : " +
+                                            status + " (" + error + ")");
+                                }
+                            });
                         }
 
                         // invent a div to hold the svg, if necessary
@@ -661,14 +662,14 @@ define(
 
                         var $render = $("pre.render,div.render,span.render", $fig);
                         if ($render.length > 0) {
-                            $render.each(function(index) {
+                            $render.each(function (index) {
                                 var temp_json = { };
                                 $.extend(true, temp_json, json);
                                 // console.log("temp_json=" + JSON.stringify(temp_json, null, 2));
                                 merge_json(temp_json, this);
                                 $(this).hide();
                                 $divsvg.last().makeID("svg", "render-" + index);
-                                $divsvg.last().svg(function(svg) {
+                                $divsvg.last().svg(function (svg) {
                                     draw_regpict(this, svg, temp_json);
                                 });
                                 if (index < ($render.length - 1)) {
@@ -677,7 +678,7 @@ define(
                                 }
                             });
                         } else if (json !== null) {
-                            $divsvg.last().svg(function(svg) {
+                            $divsvg.last().svg(function (svg) {
                                 draw_regpict(this, svg, json);
                             });
                         } else {

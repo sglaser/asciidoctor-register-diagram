@@ -1,8 +1,8 @@
-= asciidoctor-regpict
+= asciidoctor-register-diagram
 
 Asciidoctor plugin to draw register diagrams, register blocks, and messages.
 
-== Contributing to asciidoctor-regpict
+== Contributing to asciidoctor-register-diagram
  
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
 * Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it.
