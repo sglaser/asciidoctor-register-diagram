@@ -22,11 +22,11 @@ module Asciidoctor
         @lsb = try_default(raw, :lsb, nil)
         @msb = try_default(raw, :msb, nil)
 
-        if @lsb.nil? && @msb
+        if (@lsb.nil? || @lsb == '') && (@msb != '')
           @lsb = @msb
         end
 
-        if @msb.nil? && @lsb
+        if (@msb.nil? || @msb == '') && (@lsb != '')
           @msb = @lsb
         end
 
@@ -93,7 +93,7 @@ module Asciidoctor
         @attr.delete(attr)
       end
 
-      def addclass(c)
+      def add_class(c)
         if @attr.has_key?(:class)
           old = @attr[:class].split(/\s+/)
           new = c.split(/\s+/)
@@ -103,7 +103,7 @@ module Asciidoctor
         end
       end
 
-      def deleteclass(c)
+      def delete_class(c)
         if @attr.has_key?(:class)
           old = @attr[:class].split(/\s+/)
           new = c.split(/\s+/)
@@ -410,7 +410,7 @@ module Asciidoctor
 
         @field_array.each_index do |b|
           f = @field_array[b]
-          if b == f.lsb
+          if (!f.nil?) && (b == f.lsb)
             g = HtmlElement.new('g', {:class => "regFieldInternal regAttr_#{f.attr} regLink"})
 
             if f.lsb == f.msb
@@ -422,7 +422,7 @@ module Asciidoctor
               g.append(text)
             else
               if f.lsb < @visible_lsb
-                g.addclass('regFieldOverflowLSB')
+                g.add_class('regFieldOverflowLSB')
                 g.append_element('text',
                                  {:x     => right_of(f.lsb) + 2,
                                   :y     => @cell_top - 4,
@@ -436,7 +436,7 @@ module Asciidoctor
                                  [f.lsb.to_s])
               end
               if f.msb > @visible_msb
-                g.addclass('regFieldOverflowMSB')
+                g.add_class('regFieldOverflowMSB')
                 g.append_element('text',
                                  {:x     => left_of(f.msb) - 2,
                                   :y     => @cell_top - 4,
@@ -467,8 +467,8 @@ module Asciidoctor
                                 :y2    => @cell_top - (@text_height * 0.75),
                                 :class => 'regBitNumLine'})
             end
-            g.addclass(f.add_class)
-            g.addclass('regFieldUnused') if f.is_unused
+            g.add_class(f.add_class)
+            g.add_class('regFieldUnused') if f.is_unused
             g.append_element('rect',
                              {:x      => left_of(f.msb),
                               :y      => @cell_top,
@@ -532,7 +532,7 @@ module Asciidoctor
             end
 
             # estimate text width when
-            text_width = f.name.length * 7 # Assume 7px per character on average for 15px height chars
+            text_width = f.name.length * 8 # Assume 8px per character on average for 15px height chars
             if text_width > max_text_width
               max_text_width = text_width
             end
@@ -544,8 +544,8 @@ module Asciidoctor
 
             # if field has a specified value, the field name is too wide for the box, or the field name is too tall for the box
             if (f.lsb > @visible_msb) || (f.msb < @visible_lsb)
-              g.deleteclass('regFieldInternal')
-              g.addclass('regFieldHidden')
+              g.delete_class('regFieldInternal')
+              g.add_class('regFieldHidden')
             else
               if !((f.value == '') || (f.value == nil)) ||
                   ((text_width + 2) > (right_of(f.lsb) - left_of(f.msb))) ||
@@ -565,8 +565,8 @@ module Asciidoctor
                 p.line_to_vert_abs(next_bit_line - text_height / 4)
                 p.line_to_horiz_abs(right_of(-0.4))
                 g.append(p)
-                g.deleteclass('regFieldInternal')
-                g.addclass("regFieldExternal regFieldExternal#{(bit_line_count < 2 ? '0' : '1')}")
+                g.delete_class('regFieldInternal')
+                g.add_class("regFieldExternal regFieldExternal#{(bit_line_count < 2 ? '0' : '1')}")
                 next_bit_line  += text_height + 2
                 bit_line_count = (bit_line_count + 1) % 4
               end
@@ -603,18 +603,9 @@ module Asciidoctor
 
     require 'asciidoctor'
     require 'asciidoctor/extensions'
-    require 'JSON'
 
     include ::Asciidoctor
 
-# An extension that transforms the contents of a paragraph
-# to uppercase.
-#
-# Usage
-#
-#   [shout, 5]
-#   Time to get a move on.
-#
     class RegisterBlock < Extensions::BlockProcessor
 
       use_dsl
@@ -678,12 +669,8 @@ module Asciidoctor
 
       def process parent, reader, attrs
         lines = reader.lines
-        #print lines.join("\n"), "\n\n"
-        if lines.length > 0 && lines[0][0] == '{'
-          raw = JSON.parse(lines.join("\n"))
-        else
+        #puts '', '', 'RegisterBlock.process:', lines.join("\n"), ''
           raw = parse_blockdiag(lines)
-        end
 
 
         #print raw, "\n\n"
@@ -721,7 +708,5 @@ r1 = RegisterDiagram.new({ :width  => 16,
                                                      :attr => :RW1C } } })
 r1.invent_unused
 r1.process
-
-#print JSON.dump(r1.reg),"\n\n"
 
 =end
