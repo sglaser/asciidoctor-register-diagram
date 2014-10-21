@@ -615,7 +615,7 @@ module Asciidoctor
       parse_content_as :raw
 
       def parse_blockdiag(lines)
-        debug = 0
+        debug        = 0
         raw          = {}
         raw[:fields] = {}
         next_lsb     = 0
@@ -654,7 +654,7 @@ module Asciidoctor
                 opts[:msb] = opts[:lsb]
               end
             end
-            next_lsb                       = opts[:msb] + 1
+            next_lsb = opts[:msb] + 1
             puts "opts=#{opts}" if debug > 1
             raw[:fields][m[:field].intern] = opts
           else
@@ -670,13 +670,13 @@ module Asciidoctor
       def process parent, reader, attrs
         lines = reader.lines
         #puts '', '', 'RegisterBlock.process:', lines.join("\n"), ''
-          raw = parse_blockdiag(lines)
+        raw   = parse_blockdiag(lines)
 
 
         #print raw, "\n\n"
         #raw.each_pair { |key, value| print "raw[#{key}] = #{value}\n" }
         #raw["fields"].each_pair { |key, value| print "raw[fields.#{key}] = #{value}\n" }
-        reg = RegisterDiagram.new(raw)
+        reg   = RegisterDiagram.new(raw)
         #reg.dump
         reg.invent_unused
         reg.process
