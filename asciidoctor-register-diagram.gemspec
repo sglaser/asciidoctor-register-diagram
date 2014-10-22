@@ -21,5 +21,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "bundler", "~> 1.7"
   s.add_development_dependency "rake", "~> 10.0"
 
-  s.add_runtime_dependency "asciidoctor", "~> 1.5.0"
+  s.add_runtime_dependency "asciidoctor", "~> 1.5", ">= 1.5.0"
 end
