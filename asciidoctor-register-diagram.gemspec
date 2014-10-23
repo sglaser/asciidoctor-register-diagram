@@ -13,7 +13,11 @@ Gem::Specification.new do |s|
   s.homepage      = "https://github.com/sglaser/asciidoctor-register-diagram"
   s.license       = "MIT"
 
-  s.files         = `git ls-files -z`.split("\x0")
+  begin
+    s.files = `git ls-files -z -- */* {CHANGELOG,LICENSE,README,Rakefile}*`.split "\0"
+  rescue
+    s.files = Dir['**/*']
+  end
   s.executables   = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
   s.test_files    = s.files.grep(%r{^(test|spec|features)/})
   s.require_paths = ["lib"]

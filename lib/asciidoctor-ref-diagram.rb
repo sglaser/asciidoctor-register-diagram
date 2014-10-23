@@ -188,7 +188,7 @@ module Asciidoctor
       def initialize document, reader
         @define_hash = {:ASCIIDOC => {:val => 'ASCIIDOC'}}
         @options     = {:default_unused => 'RsvdP',
-                        :default_level  => 2,
+                        :default_level  => 0,
                         :default_width  => 32}
         @processed   = false
         @lines       = []
@@ -242,12 +242,12 @@ module Asciidoctor
               dump_asciidoc = nil if /^:\s*dump_asciidoc\s*!\s*:\s*/.match(l)
               if /^\s*$/.match(l) # ignore 1st 2 lines, then look for blank line
                 in_file_header = false
-                @lines << ''
-                @lines << '[pass]'
-                @lines << '++++'
-                @lines << '   <link href="asciidoc-register-diagram.css" type="text/css" rel="stylesheet" />'
-                @lines << '++++'
-                @lines << ''
+                #@lines << ''
+                #@lines << '[pass]'
+                #@lines << '++++'
+                #@lines << '   <link href="asciidoc-register-diagram.css" type="text/css" rel="stylesheet" />'
+                #@lines << '++++'
+                #@lines << ''
               end
             end
           elsif ref_file
@@ -360,7 +360,7 @@ module Asciidoctor
                 bias += 1
               end
               if !item.named
-                @lines.insert(b, '', "==%s %s" % ['=' * item.level, item.name], '', '')
+                @lines.insert(b, '', "=%s %s" % ['=' * (@options[:default_level] + item.level), item.name], '', '')
                 e    += 4
                 bias += 4
               end
