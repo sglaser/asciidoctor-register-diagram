@@ -1,0 +1,17 @@
+= foo.ref
+Nvidia Confidential
+:numbered:
+:toc:
+
+== NV_DEVICE
+
+#define NV_DEVICE                   0x0000:0x1000   /* RW--D */
+
+foo register
+
+#define NV_DEVICE_FOO                          0x42 /* RWI4F */
+#define NV_DEVICE_FOO_BIT0                      0:0 /* RWIVF */
+#define NV_DEVICE_FOO_BIT26                   26:26 /* RWIVF */
+
+[discrete]
+== End of document
