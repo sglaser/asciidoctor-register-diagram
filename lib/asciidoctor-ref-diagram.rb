@@ -1,3 +1,5 @@
+require 'asciidoctor-register-diagram'
+
 module Asciidoctor
   module RefDiagram
 
