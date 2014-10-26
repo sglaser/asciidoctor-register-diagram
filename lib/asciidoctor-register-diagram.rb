@@ -287,23 +287,23 @@ module Asciidoctor
         end
       end
 
+      def set_default_number(prop, defval)
+        prop_str = prop.to_s
+        (@reg.has_key?(prop) ? @reg[prop] : @reg.has_key?(prop_str) ? @reg[prop_str] : defval).to_i
+      end
+
+      def set_default_string(prop, defval)
+        prop_str = prop.to_s
+        (@reg.has_key?(prop) ? @reg[prop] : @reg.has_key?(prop_str) ? @reg[prop_str] : defval).to_s
+      end
+
+      def set_default(prop, defval)
+        prop_str = prop.to_s
+        (@reg.has_key?(prop) ? @reg[prop] : @reg.has_key?(prop_str) ? @reg[prop_str] : defval)
+      end
+
       def initialize(reg)
         @reg = reg
-
-        def set_default_number(prop, defval)
-          prop_str = prop.to_s
-          (@reg.has_key?(prop) ? @reg[prop] : @reg.has_key?(prop_str) ? @reg[prop_str] : defval).to_i
-        end
-
-        def set_default_string(prop, defval)
-          prop_str = prop.to_s
-          (@reg.has_key?(prop) ? @reg[prop] : @reg.has_key?(prop_str) ? @reg[prop_str] : defval).to_s
-        end
-
-        def set_default(prop, defval)
-          prop_str = prop.to_s
-          (@reg.has_key?(prop) ? @reg[prop] : @reg.has_key?(prop_str) ? @reg[prop_str] : defval)
-        end
 
         @width                = set_default_number(:width, 32)
         @default_unused       = set_default_string(:default_unused, 'RsvdP')
@@ -815,27 +815,27 @@ figure pre.json {
         lines.each do |line|
           next if /^\s*(#|\/\/)/.match(line)
           if m = /^\s*(['"]?)(\w+)\1\s*=\s*(['"]?)(.*)\3\s*((#|\/\/).*)?$/.match(line)
-            puts "matched #1 #{line} match #{m}" if debug > 1
+           #puts "matched #1 #{line} match #{m}" if debug > 1
             raw[m[2].intern] = m[4]
-            puts "raw=#{raw}" if debug > 1
+           #puts "raw=#{raw}" if debug > 1
           elsif m = /^\s*\*\s*(\[\s*((?<msb>\d+)\s*:)?\s*(?<lsb>\d+)\s*\])?\s*(?<quote>['"]?)(?<field>[\/\|\-\w]+)\k<quote>\s*(\[(?<options>.*)\])?\s*((#|\/\/).*)?$/.match(line)
-            puts "matched #2 '#{line}' match '#{m}'" if debug > 1
+           #puts "matched #2 '#{line}' match '#{m}'" if debug > 1
             opts = {}
             if !m[:options].nil?
               temp = m[:options].split(',')
-              puts "temp=#{temp}" if debug > 1
+             #puts "temp=#{temp}" if debug > 1
               temp.each do |item|
                 if m2 = /\s*(?<quote>['"]?)(?<option>\w+)\k<quote>\s*(=\s*(?<quote2>['"]?)(?<option_value>.*)\k<quote2>)?\s*((#|\/\/).*)?$/.match(item)
-                  puts "matched #3 '#{line}' match '#{m2}'" if debug > 1
+                 #puts "matched #3 '#{line}' match '#{m2}'" if debug > 1
                   val                      = m2[:option_value] || true
                   opts[m2[:option].intern] = val
                 else
-                  puts "parse_blockdiag invalid option #{item}"
+                 #puts "parse_blockdiag invalid option #{item}"
                   #raise "parse_blockdiag invalid option #{item}"
                 end
               end
             end
-            puts "opts=#{opts} m[lsb]=#{m['lsb']} m[msb]=#{m['msb']}" if debug > 1
+           #puts "opts=#{opts} m[lsb]=#{m['lsb']} m[msb]=#{m['msb']}" if debug > 1
             if m[:lsb].nil? || m[:lsb] == ''
               opts[:lsb] = next_lsb
               opts[:msb] = next_lsb + (opts[:len] || 1).to_i - 1
@@ -848,15 +848,15 @@ figure pre.json {
               end
             end
             next_lsb = opts[:msb] + 1
-            puts "opts=#{opts}" if debug > 1
+           #puts "opts=#{opts}" if debug > 1
             raw[:fields][m[:field].intern] = opts
           else
-            puts "parse_blockdiag unrecognized line #{line}"
+           #puts "parse_blockdiag unrecognized line #{line}"
             #raise "parse_blockdiag unrecognized line #{line}"
           end
         end
 
-        puts "parse_blockdiag: returning #{raw}" if debug > 0
+       #puts "parse_blockdiag: returning #{raw}" if debug > 0
         raw
       end
 
