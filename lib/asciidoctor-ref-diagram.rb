@@ -98,7 +98,7 @@ module Asciidoctor
                    '2' => 16,
                    '4' => 32,
                    '8' => 64,
-		   'F' => 128}
+                   'F' => 128}
 
       def width
         WIDTH_MAP[@ref[-1]] || 0
@@ -189,10 +189,10 @@ module Asciidoctor
       alias_method :delete, :undef
 
       def initialize document, reader
-        @define_hash = {:ASCIIDOC => {:val => 'ASCIIDOC'}}
-        @options     = {:default_unused => 'RsvdP',
-                        :default_level  => 0,
-                        :default_width  => 32}
+        @define_hash = {'ASCIIDOC' => {:val => 'ASCIIDOC'}}
+        @options     = {'default_unused' => 'RsvdP',
+                        'default_level'  => 0,
+                        'default_width'  => 32}
         @processed   = false
         @lines       = []
         @input       = if reader.respond_to?(:index) && reader.respond_to?(:length)
@@ -363,7 +363,7 @@ module Asciidoctor
                 bias += 1
               end
               if !item.named
-                @lines.insert(b, '', "=%s %s" % ['=' * (@options[:default_level] + item.level), item.name], '', '')
+                @lines.insert(b, '', "=%s %s" % ['=' * (@options['default_level'] + item.level), item.name], '', '')
                 e    += 4
                 bias += 4
               end
