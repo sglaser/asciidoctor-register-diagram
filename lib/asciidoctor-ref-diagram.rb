@@ -36,7 +36,7 @@ module Asciidoctor
             REF_PLAIN
           when @kind == 'D' then
             REF_DEVICE
-          when (@kind == 'R') || (@kind == 'A') then
+          when (@kind == 'R') || (@kind == 'A') || (@kind == 'G') then
             REF_REGISTER
           when (@kind == 'F') then
             REF_FIELD
@@ -97,7 +97,8 @@ module Asciidoctor
       WIDTH_MAP = {'1' => 8,
                    '2' => 16,
                    '4' => 32,
-                   '8' => 64}
+                   '8' => 64,
+		   'F' => 128}
 
       def width
         WIDTH_MAP[@ref[-1]] || 0
@@ -275,7 +276,7 @@ module Asciidoctor
               if stack[-1]
                 def_arg = def_arg.gsub(/[\(\)]/, '') if def_arg
                 if def_rest && def_rest != '' # value and possibly ref
-                  if m2 = /^(.*[^\s])[ \t]+\/\*[ \t]*([-A-Z0-9][- A-Z0-9]*)([-A-Z0-9])[ \t]*\*\/[ \t]*$/.match(def_rest) # value and ref both present
+                  if m2 = /^(.*[^\s])?[ \t]+\/\*[ \t]*([-a-zA-Z0-9][- a-zA-Z0-9]*)([-a-zA-Z0-9])[ \t]*\*\/[ \t]*$/.match(def_rest) # value and ref both present
                     def_val  = m2[1]
                     def_ref  = m2[2]
                     def_kind = m2[3]
