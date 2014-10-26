@@ -267,8 +267,9 @@ module Asciidoctor
               mark  = @lines.length
               named = true
             elsif m = /^\/\/[ \t]*asciidoc[ \t]+option[ \t]+(\w+)[ \t]*=[ \t]*(.*)/.match(l)
-              @options = @options.dup[m[1]] = m[2] # important, clone @options to avoid affecting older chunks
-              #puts "// asciidoc option #{m[1]}=#{m[2]}"
+              @options = @options.dup                # clone @options to avoid affecting older chunks
+              @options[m[1]] = m[2]
+             #puts "// asciidoc option #{m[1]}=#{m[2]}"
             elsif m = /^(\/\/[ \t]*asciidoc[ \t]+)?#define[ \t]+(\w+)[ \t]*(\([\w, ]*\))?[ \t]+(.*)$/.match(l)
               def_name = m[2]
               def_arg  = m[3]
