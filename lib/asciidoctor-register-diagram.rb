@@ -827,9 +827,12 @@ figure pre.json {
               temp.each do |item|
                 if m2 = /\s*(?<quote>['"]?)(?<option>\w+)\k<quote>\s*(=\s*(?<quote2>['"]?)(?<option_value>.*)\k<quote2>)?\s*((#|\/\/).*)?$/.match(item)
                   #puts "matched #3 '#{line}' match '#{m2}'" if debug > 1
-                  val = m2[:option_value] || true
-                  if /.*\|.*/.match(val)
-                    val = m2[:option_value].split(/\|/)
+                  if val = m2[:option_value]
+                    if /.*\|.*/.match(val)
+                      val = m2[:option_value].split(/\|/)
+                    end
+                  else
+                    val = true
                   end
                   opts[m2[:option].intern] = val
                 else
@@ -970,8 +973,8 @@ module Asciidoctor
                                            while sect.context != :section || sect.level != 1
                                              sect = sect.parent
                                            end
-                                           puts "\nsect=#{sect}\n par=#{sect.parent}\n    par.attributes=#{sect.parent.attributes}\n    sectnum=#{sect.sectnum('.',false)} index=#{sect.index} number=#{sect.number} sectname=#{sect.sectname} numbered=#{sect.numbered} title=#{title}\n    class=#{sect.class} node_name=#{sect.node_name} id=#{sect.id} context=#{sect.context} attributes=#{sect.attributes}"
-                                           "#{sect.sectnum('.',false)}#{item[1..-1]}"
+                                           puts "\nsect=#{sect}\n par=#{sect.parent}\n    par.attributes=#{sect.parent.attributes}\n    sectnum=#{sect.sectnum('.', false)} index=#{sect.index} number=#{sect.number} sectname=#{sect.sectname} numbered=#{sect.numbered} title=#{title}\n    class=#{sect.class} node_name=#{sect.node_name} id=#{sect.id} context=#{sect.context} attributes=#{sect.attributes}"
+                                           "#{sect.sectnum('.', false)}#{item[1..-1]}"
                                          when '#'
                                            caption_num = @document.counter_increment("#{key}-number", self)
                                            "#{caption_num}#{item[1..-1]}"

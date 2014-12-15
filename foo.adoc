@@ -1,0 +1,19 @@
+= foo
+
+
+== beginning of document
+
+[register]
+width=27
+* [0] bit0
+* [26] bit26
+
+[register]
+----
+width=32
+* [0] bit0
+* [26] bit26
+----
+
+
+== end of document
