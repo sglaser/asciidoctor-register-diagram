@@ -31,11 +31,11 @@ module Asciidoctor
         end
 
         @is_unused = try_default(raw, :is_unused, false)
-        @attr      = try_default(raw, :attr, reg.default_attr.downcase)
-        @value     = try_default(raw, :value, nil)
+        @attr = try_default(raw, :attr, reg.default_attr.downcase)
+        @value = try_default(raw, :value, nil)
         @add_class = try_default(raw, :add_class, '')
-        @key       = key
-        @name      = try_default(raw, :name, key || (is_unused ? '_unused' : 'field') + "_#{@msb}_#{@lsb}")
+        @key = key
+        @name = try_default(raw, :name, key || (is_unused ? '_unused' : 'field') + "_#{@msb}_#{@lsb}")
 
         #@is_unused = raw.has_key?(:is_unused) ? raw[:is_unused] : false
         #@attr = (raw.has_key?(:attr) ? raw[:attr] : reg.default_attr).downcase
@@ -68,9 +68,9 @@ module Asciidoctor
       attr_accessor :attr
 
       def initialize(tag, attr = {}, content = [])
-        @tag     = tag
+        @tag = tag
         @content = content
-        @attr    = attr
+        @attr = attr
       end
 
       def append(*items)
@@ -116,15 +116,15 @@ module Asciidoctor
         @attr.keys.sort.each do |key|
           temp += " #{key}=\"#{@attr[key]}\""
         end
-        prefix  = (@content.length <= 1) ? '' : (' ' * level)
+        prefix = (@content.length <= 1) ? '' : (' ' * level)
         prefix2 = (@content.length <= 1) ? '' : (' ' * (level+2))
         postfix = (@content.length <= 1) ? '' : (level > 0 ? "\n  " : "\n")
-        temp    = ["#{prefix}<#{@tag}#{temp}>#{postfix}"]
-        temp    += @content.map {
+        temp = ["#{prefix}<#{@tag}#{temp}>#{postfix}"]
+        temp += @content.map {
             |item| prefix2 + (item.is_a?(HtmlElement) ? item.to_s(level+2) : item.to_s) + postfix
         }
-        temp    += ["#{prefix}</#{@tag}>#{postfix}"]
-        temp    = temp.join('')
+        temp += ["#{prefix}</#{@tag}>#{postfix}"]
+        temp = temp.join('')
         (level == 0) ? "#{temp}\n\n" : temp
       end
 
@@ -305,24 +305,24 @@ module Asciidoctor
       def initialize(reg)
         @reg = reg
 
-        @width                = set_default_number(:width, 32)
-        @default_unused       = set_default_string(:default_unused, 'RsvdP')
-        @default_attr         = set_default_string(:default_attr, 'other')
-        @cell_width           = set_default_number(:cell_width, 16)
-        @cell_height          = set_default_number(:cell_height, 32)
+        @width = set_default_number(:width, 32)
+        @default_unused = set_default_string(:default_unused, 'RsvdP')
+        @default_attr = set_default_string(:default_attr, 'other')
+        @cell_width = set_default_number(:cell_width, 16)
+        @cell_height = set_default_number(:cell_height, 32)
         @cell_internal_height = set_default_number(:cell_internal_height, 8)
-        @cell_value_top       = set_default_number(:cell_value_top, 16) # top of text for regFieldValueInternal
-        @cell_bit_value_top   = set_default_number(:cell_bit_value_top, 20) # top of text for regFieldBitValue
-        @cell_name_top        = set_default_number(:cell_name_top, 16) # top of text for regFieldNameInternal
-        @bracket_height       = set_default_number(:bracket_height, 4)
-        @cell_top             = set_default_number(:cell_top, 40)
-        @bit_width_pos        = set_default_number(:bit_width_pos, 20)
-        @fig_name             = set_default_string(:fig_name, "???")
-        @max_fig_width        = set_default_number(:max_fig_width, 1000) # 7.5 inches (assuming 96 px per inch
-        @fig_left             = set_default_number(:fig_left, 32)
-        @visible_lsb          = set_default_number(:visible_lsb, 0)
-        @visible_msb          = set_default_number(:visible_msb, @width)
-        @text_height          = set_default_number(:text_height, 18)
+        @cell_value_top = set_default_number(:cell_value_top, 16) # top of text for regFieldValueInternal
+        @cell_bit_value_top = set_default_number(:cell_bit_value_top, 20) # top of text for regFieldBitValue
+        @cell_name_top = set_default_number(:cell_name_top, 16) # top of text for regFieldNameInternal
+        @bracket_height = set_default_number(:bracket_height, 4)
+        @cell_top = set_default_number(:cell_top, 40)
+        @bit_width_pos = set_default_number(:bit_width_pos, 20)
+        @fig_name = set_default_string(:fig_name, "???")
+        @max_fig_width = set_default_number(:max_fig_width, 1000) # 7.5 inches (assuming 96 px per inch
+        @fig_left = set_default_number(:fig_left, 32)
+        @visible_lsb = set_default_number(:visible_lsb, 0)
+        @visible_msb = set_default_number(:visible_msb, @width)
+        @text_height = set_default_number(:text_height, 18)
 
         if @visible_msb < 0
           @visible_msb = 0
@@ -338,15 +338,15 @@ module Asciidoctor
         end
 
         @name_max_width = 0
-        @field_hash     = {}
-        @field_array    = [] * (@width+1)
+        @field_hash = {}
+        @field_array = [] * (@width+1)
         set_default(:fields, {}).each_pair do |key, item|
           f = RegisterField.new(self, item, key)
           for i in f.lsb..f.msb
             @field_array[i] = f
           end
           @field_hash[key] = f
-          @name_max_width  = f.name.length if f.name.length > @name_max_width
+          @name_max_width = f.name.length if f.name.length > @name_max_width
         end
 
       end
@@ -354,11 +354,11 @@ module Asciidoctor
       def new_unused_field(msb, lsb)
         # if full name fits, use it else use 1st char
         n = (((msb - lsb) * 2) >= @default_unused.length ? @default_unused : @default_unused[0].upcase)
-        f = RegisterField.new(self, {:msb       => msb,
-                                     :lsb       => lsb,
-                                     :name      => n,
+        f = RegisterField.new(self, {:msb => msb,
+                                     :lsb => lsb,
+                                     :name => n,
                                      :is_unused => true,
-                                     :attr      => @default_unused.downcase})
+                                     :attr => @default_unused.downcase})
         f
       end
 
@@ -402,7 +402,7 @@ module Asciidoctor
       def process
         #dump
 
-        next_bit_line  = @cell_top + @cell_height + 20 # 76
+        next_bit_line = @cell_top + @cell_height + 20 # 76
         bit_line_count = 0
         max_text_width = 0
 
@@ -415,8 +415,8 @@ module Asciidoctor
 
             if f.lsb == f.msb
               text = HtmlElement.new('text',
-                                     {:x     => middle_of(f.lsb),
-                                      :y     => @cell_top - 4,
+                                     {:x => middle_of(f.lsb),
+                                      :y => @cell_top - 4,
                                       :class => 'regBitNumMiddle'},
                                      [f.lsb.to_s])
               g.append(text)
@@ -424,28 +424,28 @@ module Asciidoctor
               if f.lsb < @visible_lsb
                 g.add_class('regFieldOverflowLSB')
                 g.append_element('text',
-                                 {:x     => right_of(f.lsb) + 2,
-                                  :y     => @cell_top - 4,
+                                 {:x => right_of(f.lsb) + 2,
+                                  :y => @cell_top - 4,
                                   :class => 'regBitNumEnd'},
                                  ["... " + f.lsb.to_s])
               else
                 g.append_element('text',
-                                 {:x     => right_of(f.lsb) - 2,
-                                  :y     => @cell_top - 4,
+                                 {:x => right_of(f.lsb) - 2,
+                                  :y => @cell_top - 4,
                                   :class => 'regBitNumEnd'},
                                  [f.lsb.to_s])
               end
               if f.msb > @visible_msb
                 g.add_class('regFieldOverflowMSB')
                 g.append_element('text',
-                                 {:x     => left_of(f.msb) - 2,
-                                  :y     => @cell_top - 4,
+                                 {:x => left_of(f.msb) - 2,
+                                  :y => @cell_top - 4,
                                   :class => 'regBitNumStart'},
                                  [f.msb.to_s + " ..."])
               else
                 g.append_element('text',
-                                 {:x     => left_of(f.msb) + 2,
-                                  :y     => @cell_top - 4,
+                                 {:x => left_of(f.msb) + 2,
+                                  :y => @cell_top - 4,
                                   :class => 'regBitNumStart'},
                                  [f.msb.to_s])
               end
@@ -453,54 +453,54 @@ module Asciidoctor
             end
             if f.lsb >= @visible_lsb
               g.append_element('line',
-                               {:x1    => right_of(f.lsb),
-                                :x2    => right_of(f.lsb),
-                                :y1    => @cell_top,
-                                :y2    => @cell_top - (@text_height * 0.75),
+                               {:x1 => right_of(f.lsb),
+                                :x2 => right_of(f.lsb),
+                                :y1 => @cell_top,
+                                :y2 => @cell_top - (@text_height * 0.75),
                                 :class => (f.lsb == @visible_lsb) ? 'regBitNumLine' : 'regBitNumLineHide'})
             end
             if f.msb <= @visible_msb
               g.append_element('line',
-                               {:x1    => left_of(f.msb),
-                                :x2    => left_of(f.msb),
-                                :y1    => @cell_top,
-                                :y2    => @cell_top - (@text_height * 0.75),
+                               {:x1 => left_of(f.msb),
+                                :x2 => left_of(f.msb),
+                                :y1 => @cell_top,
+                                :y2 => @cell_top - (@text_height * 0.75),
                                 :class => 'regBitNumLine'})
             end
             g.add_class(f.add_class)
             g.add_class('regFieldUnused') if f.is_unused
             g.append_element('rect',
-                             {:x      => left_of(f.msb),
-                              :y      => @cell_top,
-                              :width  => right_of(f.lsb) - left_of(f.msb),
+                             {:x => left_of(f.msb),
+                              :y => @cell_top,
+                              :width => right_of(f.lsb) - left_of(f.msb),
                               :height => @cell_height,
-                              :class  => 'regFieldBox'})
+                              :class => 'regFieldBox'})
             for j in (f.lsb+1)..f.msb
               if (j >= @visible_lsb) && (j <= @visible_msb)
                 g.append_element('line',
-                                 {:x1    => right_of(j),
-                                  :x2    => right_of(j),
-                                  :y1    => @cell_top + @cell_height - @cell_internal_height,
-                                  :y2    => @cell_top + @cell_height,
+                                 {:x1 => right_of(j),
+                                  :x2 => right_of(j),
+                                  :y1 => @cell_top + @cell_height - @cell_internal_height,
+                                  :y2 => @cell_top + @cell_height,
                                   :class => 'regFieldBox'})
               end
             end
             g.append_element('text',
-                             {:x     => (left_of(f.msb) + right_of(f.lsb)) / 2,
-                              :y     => @cell_top - @bit_width_pos,
+                             {:x => (left_of(f.msb) + right_of(f.lsb)) / 2,
+                              :y => @cell_top - @bit_width_pos,
                               :class => 'regBitWidth'},
                              [(f.msb == f.lsb) ? '1 bit' : (f.msb - f.lsb + 1).to_s + ' bits'])
 
             text = HtmlElement.new('text',
-                                   {:x     => (left_of(f.msb) + right_of(f.lsb)) / 2,
-                                    :y     => @cell_top + @cell_name_top,
+                                   {:x => (left_of(f.msb) + right_of(f.lsb)) / 2,
+                                    :y => @cell_top + @cell_name_top,
                                     :class => 'regFieldName'},
                                    [f.name])
             g.append(text)
 
             if false && (!f.is_unused) && (f.lsb <= @visible_msb) && (f.msb >= @visible_lsb)
               dollar_temp_dom = dollar('<span></span>').prependTo(divsvg)
-              unique_id       = dollar_temp_dom.makeID('regpict', (f.id ? f.id : (@fig_name + "-" + f.name)))
+              unique_id = dollar_temp_dom.makeID('regpict', (f.id ? f.id : (@fig_name + "-" + f.name)))
               dollar_temp_dom.remove()
               @svg.change(g, {:id => unique_id})
             end
@@ -508,8 +508,8 @@ module Asciidoctor
               if f.value.is_a?(Array) && (f.value.length == (f.msb - f.lsb + 1))
                 for i in 0..f.value.length
                   g.append_element('text',
-                                   {:x     => (left_of(f.lsb + i) + right_of(f.lsb + i)) / 2,
-                                    :y     => @cell_top + @cell_bit_value_top,
+                                   {:x => (left_of(f.lsb + i) + right_of(f.lsb + i)) / 2,
+                                    :y => @cell_top + @cell_bit_value_top,
                                     :class => ('regFieldValue regFieldBitValue' + " regFieldBitValue-" + i.to_s + ((i == (f.value.length - 1)) ? " regFieldBitValue-msb" : ''))},
                                    [f.value[i]])
 
@@ -517,14 +517,14 @@ module Asciidoctor
               else
                 if f.value.is_a?(String) || f.value.is_a?(Array)
                   g.append_element('text',
-                                   {:x     => (left_of(f.msb) + right_of(f.lsb)) / 2,
-                                    :y     => @cell_top + (f.msb == f.lsb ? @cell_bit_value_top : @cell_value_top),
+                                   {:x => (left_of(f.msb) + right_of(f.lsb)) / 2,
+                                    :y => @cell_top + (f.msb == f.lsb ? @cell_bit_value_top : @cell_value_top),
                                     :class => 'regFieldValue'},
                                    [f.value])
                 else
                   g.append_element('text',
-                                   {:x     => (left_of(f.msb) + right_of(f.lsb)) / 2,
-                                    :y     => @cell_top + @cell_value_top,
+                                   {:x => (left_of(f.msb) + right_of(f.lsb)) / 2,
+                                    :y => @cell_top + @cell_value_top,
                                     :class => 'svg_error'},
                                    ['INVALID VALUE'])
                 end
@@ -554,34 +554,34 @@ module Asciidoctor
                 text.set(:y, next_bit_line)
                 text.set(:class, 'regFieldName')
                 p = PathElement.new({:class => 'regBitBracket',
-                                     :fill  => 'none'})
+                                     :fill => 'none'})
                 p.move_to_abs(left_of(f.msb), @cell_top + @cell_height)
                 p.line_to_rel(((right_of(f.lsb) - left_of(f.msb)) / 2), @bracket_height)
                 p.line_to_abs(right_of(f.lsb), @cell_top + @cell_height)
                 g.append(p)
                 p = PathElement.new({:class => 'regBitLine',
-                                     :fill  => 'none'})
+                                     :fill => 'none'})
                 p.move_to_abs(middle_of(f.lsb + ((f.msb - f.lsb) / 2)), @cell_top + @cell_height + @bracket_height)
                 p.line_to_vert_abs(next_bit_line - text_height / 4)
                 p.line_to_horiz_abs(right_of(-0.4))
                 g.append(p)
                 g.delete_class('regFieldInternal')
                 g.add_class("regFieldExternal regFieldExternal#{(bit_line_count < 2 ? '0' : '1')}")
-                next_bit_line  += text_height + 2
+                next_bit_line += text_height + 2
                 bit_line_count = (bit_line_count + 1) % 4
               end
             end
             if f.msb > @visible_lsb && f.lsb < @visible_lsb
               g.append_element('text',
-                               {:x     => right_of(0) + 2,
-                                :y     => @cell_top + @cell_name_top,
+                               {:x => right_of(0) + 2,
+                                :y => @cell_top + @cell_name_top,
                                 :class => 'regFieldExtendsRight'},
                                ['...'])
             end
             if f.msb > @visible_msb && f.lsb < @visible_msb
               g.append_element('text',
-                               {:x     => left_of(f.msb) - 2,
-                                :y     => @cell_top + @cell_name_top,
+                               {:x => left_of(f.msb) - 2,
+                                :y => @cell_top + @cell_name_top,
                                 :class => 'regFieldExtendsLeft'},
                                ['...'])
             end
@@ -589,14 +589,14 @@ module Asciidoctor
           end
         end
 
-        scale          = 1.0
+        scale = 1.0
         max_text_width = max_text_width + right_of(-1)
         if @max_fig_width > 0 && max_text_width > @max_fig_width
           scale = @max_fig_width / max_text_width
         end
-        @svg.attr = {:height              => (scale * next_bit_line).to_s + 'px',
-                     :width               => (scale * max_text_width).to_s + 'px',
-                     :view_box            => '0 0 ' + max_text_width.to_s + ' ' + next_bit_line.to_s,
+        @svg.attr = {:height => (scale * next_bit_line).to_s + 'px',
+                     :width => (scale * max_text_width).to_s + 'px',
+                     :view_box => '0 0 ' + max_text_width.to_s + ' ' + next_bit_line.to_s,
                      'xmlns:xlink'.intern => "http://www.w3.org/1999/xlink"}
       end
     end
@@ -619,7 +619,7 @@ module Asciidoctor
       def include_link(parent, attrs)
         return '' if @@already_included[parent.document]
         @@already_included[parent.document] = true
-        css                                 = <<-EOS
+        css = <<-EOS
 <style>
 /* --- asciidoc-register-diagram.css --- */
 text.regBitNumMiddle {
@@ -808,34 +808,37 @@ figure pre.json {
       end
 
       def parse_blockdiag(lines)
-        debug        = 0
-        raw          = {}
+        debug = 0
+        raw = {}
         raw[:fields] = {}
-        next_lsb     = 0
+        next_lsb = 0
         lines.each do |line|
           next if /^\s*(#|\/\/)/.match(line)
           if m = /^\s*(['"]?)(\w+)\1\s*=\s*(['"]?)(.*)\3\s*((#|\/\/).*)?$/.match(line)
-           #puts "matched #1 #{line} match #{m}" if debug > 1
+            #puts "matched #1 #{line} match #{m}" if debug > 1
             raw[m[2].intern] = m[4]
-           #puts "raw=#{raw}" if debug > 1
+            #puts "raw=#{raw}" if debug > 1
           elsif m = /^\s*\*\s*(\[\s*((?<msb>\d+)\s*:)?\s*(?<lsb>\d+)\s*\])?\s*(?<quote>['"]?)(?<field>[\/\|\-\w]+)\k<quote>\s*(\[(?<options>.*)\])?\s*((#|\/\/).*)?$/.match(line)
-           #puts "matched #2 '#{line}' match '#{m}'" if debug > 1
+            #puts "matched #2 '#{line}' match '#{m}'" if debug > 1
             opts = {}
             if !m[:options].nil?
               temp = m[:options].split(',')
-             #puts "temp=#{temp}" if debug > 1
+              #puts "temp=#{temp}" if debug > 1
               temp.each do |item|
                 if m2 = /\s*(?<quote>['"]?)(?<option>\w+)\k<quote>\s*(=\s*(?<quote2>['"]?)(?<option_value>.*)\k<quote2>)?\s*((#|\/\/).*)?$/.match(item)
-                 #puts "matched #3 '#{line}' match '#{m2}'" if debug > 1
-                  val                      = m2[:option_value] || true
+                  #puts "matched #3 '#{line}' match '#{m2}'" if debug > 1
+                  val = m2[:option_value] || true
+                  if /.*\|.*/.match(val)
+                    val = m2[:option_value].split(/\|/)
+                  end
                   opts[m2[:option].intern] = val
                 else
-                 #puts "parse_blockdiag invalid option #{item}"
+                  #puts "parse_blockdiag invalid option #{item}"
                   #raise "parse_blockdiag invalid option #{item}"
                 end
               end
             end
-           #puts "opts=#{opts} m[lsb]=#{m['lsb']} m[msb]=#{m['msb']}" if debug > 1
+            #puts "opts=#{opts} m[lsb]=#{m['lsb']} m[msb]=#{m['msb']}" if debug > 1
             if m[:lsb].nil? || m[:lsb] == ''
               opts[:lsb] = next_lsb
               opts[:msb] = next_lsb + (opts[:len] || 1).to_i - 1
@@ -848,43 +851,157 @@ figure pre.json {
               end
             end
             next_lsb = opts[:msb] + 1
-           #puts "opts=#{opts}" if debug > 1
+            #puts "opts=#{opts}" if debug > 1
             raw[:fields][m[:field].intern] = opts
           else
-           #puts "parse_blockdiag unrecognized line #{line}"
+            #puts "parse_blockdiag unrecognized line #{line}"
             #raise "parse_blockdiag unrecognized line #{line}"
           end
         end
 
-       #puts "parse_blockdiag: returning #{raw}" if debug > 0
+        #puts "parse_blockdiag: returning #{raw}" if debug > 0
         raw
       end
 
       def process parent, reader, attrs
         lines = reader.lines
         #puts '', '', 'RegisterBlock.process:', lines.join("\n"), ''
-        raw   = parse_blockdiag(lines)
+        raw = parse_blockdiag(lines)
 
 
         #print raw, "\n\n"
         #raw.each_pair { |key, value| print "raw[#{key}] = #{value}\n" }
         #raw["fields"].each_pair { |key, value| print "raw[fields.#{key}] = #{value}\n" }
-        reg   = RegisterDiagram.new(raw)
+        reg = RegisterDiagram.new(raw)
         #reg.dump
         reg.invent_unused
         reg.process
         #print reg.svg.dump
-        if attrs.has_key?(:attributes)
-          attrs[:attributes]['caption'] = "Figure"
-          attrs[:attributes]['title']   = "Title"
+        block = create_block parent, :register, include_link(parent, attrs) + reg.svg.to_s, attrs, {:subs => nil}
+        if attrs.has_key?('title')
+          block.title = attrs.delete('title')
         end
-        create_pass_block parent, include_link(parent, attrs) + reg.svg.to_s, attrs, {:subs => nil}
+        #block.assign_caption nil, 'figure'
+        puts "\nRegister: block.context=#{block.context} block.title=#{block.title} block.caption=#{block.caption} attrs=#{attrs}\n par=#{parent}"
+        block
       end
     end
 
     Extensions.register do
       block RegisterBlock
 
+    end
+  end
+
+end
+
+require 'asciidoctor/converter/html5'
+
+module Asciidoctor
+  module Converter
+    class Html5Converter
+      def register node
+        id_attribute = node.id ? %( id="#{node.id}") : nil
+        title_element = node.title? ? %(<div class="title">#{node.captioned_title}</div>\n) : nil
+        %(<div#{id_attribute} class="registerblock imageblock">
+#{title_element}<div class="content">
+#{node.content}
+</div>
+</div>)
+      end
+    end
+  end
+end
+
+require 'asciidoctor/abstract_block'
+require 'asciidoctor/block'
+require 'asciidoctor/document'
+require 'asciidoctor/list'
+require 'asciidoctor/section'
+require 'asciidoctor/table'
+
+module Asciidoctor
+  class AbstractBlock
+# Public: Generate a caption and assign it to this block if one
+# is not already assigned.
+#
+# If the block has a title and a caption prefix is available
+# for this block, then build a caption from this information,
+# assign it a number and store it to the caption attribute on
+# the block.
+#
+# If an explicit caption has been specified on this block, then
+# do nothing.
+#
+# key         - The prefix of the caption and counter attribute names.
+#               If not provided, the name of the context for this block
+#               is used. (default: nil).
+#
+# Returns nothing
+    def assign_caption(caption = nil, key = nil)
+      return unless title? || !@caption
+
+      if caption
+        @caption = caption
+      else
+        if (value = @document.attributes['caption'])
+          @caption = value
+        elsif title?
+          key ||= @context.to_s
+          caption_key = "#{key}-caption"
+          if (caption_title = @document.attributes[caption_key])
+            if caption_title.include?('%')
+              caption_split = caption_title.split(/%/)
+              #puts "\n#{caption_split}"
+              caption_split.each_index do |i|
+                item = caption_split[i]
+                #puts "index=#{i} item='#{item}'"
+                if i != 0
+                  #puts "i != 0 #{i}"
+                  if caption_split[i].length == 0
+                    caption_split[i] = '%'
+                    #puts "length == 0 '#{caption_split[i]}'"
+                  else
+                    caption_split[i] = case item[0]
+                                         when 'c'
+                                           #puts "chapter + #{item}"
+                                           #@document.reindex_sections
+                                           sect = parent
+                                           while sect.context != :section || sect.level != 1
+                                             sect = sect.parent
+                                           end
+                                           puts "\nsect=#{sect}\n par=#{sect.parent}\n    par.attributes=#{sect.parent.attributes}\n    sectnum=#{sect.sectnum('.',false)} index=#{sect.index} number=#{sect.number} sectname=#{sect.sectname} numbered=#{sect.numbered} title=#{title}\n    class=#{sect.class} node_name=#{sect.node_name} id=#{sect.id} context=#{sect.context} attributes=#{sect.attributes}"
+                                           "#{sect.sectnum('.',false)}#{item[1..-1]}"
+                                         when '#'
+                                           caption_num = @document.counter_increment("#{key}-number", self)
+                                           "#{caption_num}#{item[1..-1]}"
+                                         when '('
+                                           if m1 = item.match(/\((\w+)\)(.*)/)
+                                             #puts "match m1=#{m1} m1[1]=#{m1[1]} m1[2]=#{m1[2]}"
+                                             key2 = "#{m1[1]}-number"
+                                             #puts "key2=#{key2}"
+                                             caption_num = @document.counter_increment(key2, self)
+                                             "#{caption_num}#{m1[2]}"
+                                           else
+                                             "&lt;UNKNOWN COUNTER item='#{item}'&gt;"
+                                           end
+                                         else
+                                           "&lt;UNKNOWN % ITEM '#{item[0]}&gt;'#{item[1..-1]}"
+                                       end
+                  end
+                end
+                #puts "#{caption_split}"
+              end
+              puts "#{caption_split}"
+              @caption = caption_split.join('')
+            end
+          else
+            caption_num = @document.counter_increment("#{key}-number", self)
+            @caption = "#{caption_title} #{caption_num}. "
+          end
+        end
+      end
+      nil
     end
   end
 end
