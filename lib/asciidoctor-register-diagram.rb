@@ -885,7 +885,7 @@ figure pre.json {
           block.title = attrs.delete('title')
         end
         #block.assign_caption nil, 'figure'
-        puts "\nRegister: block.context=#{block.context} block.title=#{block.title} block.caption=#{block.caption} attrs=#{attrs}\n par=#{parent}"
+        #puts "\nRegister: block.context=#{block.context} block.title=#{block.title} block.caption=#{block.caption} attrs=#{attrs}\n par=#{parent}"
         block
       end
     end
@@ -943,22 +943,27 @@ module Asciidoctor
 # Returns nothing
     def assign_caption(caption = nil, key = nil)
       return unless title? || !@caption
+      #puts "Enter assign_caption caption=#{caption} key=#{key} title=#{title}"
 
       if caption
         @caption = caption
+        #puts "no caption"
       else
         if (value = @document.attributes['caption'])
           @caption = value
+          #puts "document.attributes['caption'] #{@caption}"
         elsif title?
           key ||= @context.to_s
           caption_key = "#{key}-caption"
+          #puts "caption_key=#{caption_key}"
           if (caption_title = @document.attributes[caption_key])
+            #puts "caption_title=#{caption_title}"
             if caption_title.include?('%')
               caption_split = caption_title.split(/%/)
               #puts "\n#{caption_split}"
               caption_split.each_index do |i|
                 item = caption_split[i]
-                #puts "index=#{i} item='#{item}'"
+                ##puts "index=#{i} item='#{item}'"
                 if i != 0
                   #puts "i != 0 #{i}"
                   if caption_split[i].length == 0
@@ -973,7 +978,7 @@ module Asciidoctor
                                            while sect.context != :section || sect.level != 1
                                              sect = sect.parent
                                            end
-                                           puts "\nsect=#{sect}\n par=#{sect.parent}\n    par.attributes=#{sect.parent.attributes}\n    sectnum=#{sect.sectnum('.', false)} index=#{sect.index} number=#{sect.number} sectname=#{sect.sectname} numbered=#{sect.numbered} title=#{title}\n    class=#{sect.class} node_name=#{sect.node_name} id=#{sect.id} context=#{sect.context} attributes=#{sect.attributes}"
+                                           #puts "\nsect=#{sect}\n par=#{sect.parent}\n    par.attributes=#{sect.parent.attributes}\n    sectnum=#{sect.sectnum('.', false)} index=#{sect.index} number=#{sect.number} sectname=#{sect.sectname} numbered=#{sect.numbered} title=#{title}\n    class=#{sect.class} node_name=#{sect.node_name} id=#{sect.id} context=#{sect.context} attributes=#{sect.attributes}"
                                            "#{sect.sectnum('.', false)}#{item[1..-1]}"
                                          when '#'
                                            caption_num = @document.counter_increment("#{key}-number", self)
@@ -995,15 +1000,21 @@ module Asciidoctor
                 end
                 #puts "#{caption_split}"
               end
-              puts "#{caption_split}"
+              #puts "#{caption_split}"
               @caption = caption_split.join('')
+            else
+              caption_num = @document.counter_increment("#{key}-number", self)
+              #puts "caption_num1=#{caption_num}"
+              @caption = "#{caption_title} #{caption_num}. "
             end
           else
             caption_num = @document.counter_increment("#{key}-number", self)
+            #puts "caption_num2=#{caption_num}"
             @caption = "#{caption_title} #{caption_num}. "
           end
         end
       end
+      #puts "Exit assign_caption returning #{@caption}"
       nil
     end
   end
