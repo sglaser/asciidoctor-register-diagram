@@ -34,3 +34,6 @@ mkmf.log
 
 # Archive
 Old
+
+# output file
+register-diagram.html
