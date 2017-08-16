@@ -6,10 +6,12 @@ module Asciidoctor
       attr_accessor :is_unused
       attr_accessor :attr
       attr_accessor :name
+      attr_accessor :orig_name
       attr_accessor :value
       attr_accessor :register
       attr_accessor :key
       attr_accessor :add_class
+      attr_accessor :show_attr
 
       def try_default(raw, tag, default)
         tag_str = tag.to_s
@@ -31,11 +33,17 @@ module Asciidoctor
         end
 
         @is_unused = try_default(raw, :is_unused, false)
+        @show_attr = try_default(raw, :show_attr, reg.show_attr)
         @attr = try_default(raw, :attr, reg.default_attr.downcase)
         @value = try_default(raw, :value, nil)
         @add_class = try_default(raw, :add_class, '')
-        @key = key
-        @name = try_default(raw, :name, key || (is_unused ? '_unused' : 'field') + "_#{@msb}_#{@lsb}")
+        if key.nil? || key == ''
+          @key = (@is_unused ? '_unused' : 'field') + "_#{@msb}_#{@lsb}"
+        else
+          @key = key
+        end
+        @name = try_default(raw, :name, @key)
+        @orig_name = try_default(raw, :orig_name, @key)
 
         #@is_unused = raw.has_key?(:is_unused) ? raw[:is_unused] : false
         #@attr = (raw.has_key?(:attr) ? raw[:attr] : reg.default_attr).downcase
@@ -134,7 +142,7 @@ module Asciidoctor
     class PathElement < HtmlElement
       def initialize(attr = {})
         super('path', attr)
-        @attr[:d] = '' if !@attr.has_key?(:d)
+        @attr[:d] = '' unless @attr.has_key?(:d)
       end
 
       def move_to_abs(x, y)
@@ -225,6 +233,7 @@ module Asciidoctor
     class RegisterDiagram
 
       attr_reader :width
+      attr_reader :show_attr
       attr_reader :default_unused
       attr_reader :default_attr
       attr_reader :cell_width
@@ -306,6 +315,7 @@ module Asciidoctor
         @reg = reg
 
         @width = set_default_number(:width, 32)
+        @show_attr = set_default(:show_attr, false)
         @default_unused = set_default_string(:default_unused, 'RsvdP')
         @default_attr = set_default_string(:default_attr, 'other')
         @cell_width = set_default_number(:cell_width, 16)
@@ -356,7 +366,9 @@ module Asciidoctor
         n = (((msb - lsb) * 2) >= @default_unused.length ? @default_unused : @default_unused[0].upcase)
         f = RegisterField.new(self, {:msb => msb,
                                      :lsb => lsb,
-                                     :name => n,
+                                     :show_attr => @show_attr,
+                                     #:name => n,
+                                     :name => @default_unused,
                                      :is_unused => true,
                                      :attr => @default_unused.downcase})
         f
@@ -387,7 +399,7 @@ module Asciidoctor
       def dump
         print "\nRegister: width=#{@width} default_unused='#{@default_unused}'",
               " cell_width=#{@cell_width} cell_height=#{@cell_height} cell_internal_height=#{@cell_internal_height}",
-              " cell_top=#{@cell_top} bracket_height=#{@bracket_height} name_max_width=#{@name_max_width}\n\n"
+              " cell_top=#{@cell_top} bracket_height=#{@bracket_height} name_max_width=#{@name_max_width} fig_name=#{@fig_name}\n\n"
         @field_hash.each_pair do |key, item|
           print " hash:  %-#{@name_max_width}s => %s\n" % [key, item]
         end
@@ -491,11 +503,19 @@ module Asciidoctor
                               :class => 'regBitWidth'},
                              [(f.msb == f.lsb) ? '1 bit' : (f.msb - f.lsb + 1).to_s + ' bits'])
 
+            if f.orig_name.nil?
+              field_text = "#{f.name}"
+            else
+              field_text = "#{f.orig_name}"
+            end
+            if (!f.show_attr.nil?) && f.show_attr
+              field_text = "#{field_text} (#{f.attr})"
+            end
             text = HtmlElement.new('text',
                                    {:x => (left_of(f.msb) + right_of(f.lsb)) / 2,
                                     :y => @cell_top + @cell_name_top,
                                     :class => 'regFieldName'},
-                                   [f.name])
+                                   [field_text])
             g.append(text)
 
             if false && (!f.is_unused) && (f.lsb <= @visible_msb) && (f.msb >= @visible_lsb)
@@ -504,7 +524,7 @@ module Asciidoctor
               dollar_temp_dom.remove()
               @svg.change(g, {:id => unique_id})
             end
-            if !f.value.nil?
+            unless f.value.nil?
               if f.value.is_a?(Array) && (f.value.length == (f.msb - f.lsb + 1))
                 for i in 0..f.value.length
                   g.append_element('text',
@@ -532,7 +552,7 @@ module Asciidoctor
             end
 
             # estimate text width when
-            text_width = f.name.length * 8 # Assume 8px per character on average for 15px height chars
+            text_width = field_text.length * 8 # Assume 8px per character on average for 15px height chars
             if text_width > max_text_width
               max_text_width = text_width
             end
@@ -814,20 +834,20 @@ figure pre.json {
         next_lsb = 0
         lines.each do |line|
           next if /^\s*(#|\/\/)/.match(line)
-          if m = /^\s*(['"]?)(\w+)\1\s*=\s*(['"]?)(.*)\3\s*((#|\/\/).*)?$/.match(line)
-            #puts "matched #1 #{line} match #{m}" if debug > 1
+          if (m = /^\s*(['"]?)(\w+)\1\s*=\s*(['"]?)(.*)\3\s*((#|\/\/).*)?$/.match(line))
+            puts "matched #1 #{line} match #{m}" if debug > 1
             raw[m[2].intern] = m[4]
-            #puts "raw=#{raw}" if debug > 1
-          elsif m = /^\s*\*\s*(\[\s*((?<msb>\d+)\s*:)?\s*(?<lsb>\d+)\s*\])?\s*(?<quote>['"]?)(?<field>[\/\|\-\w]+)\k<quote>\s*(\[(?<options>.*)\])?\s*((#|\/\/).*)?$/.match(line)
-            #puts "matched #2 '#{line}' match '#{m}'" if debug > 1
+            puts "raw=#{raw}" if debug > 1
+          elsif (m = /^\s*\*\s*(\[\s*((?<msb>\d+)\s*:)?\s*(?<lsb>\d+)\s*\])?\s*(?<quote>['"]?)(?<field>[\/\|\-\w \t\(\)]*)\k<quote>\s*(\[(?<options>.*)\])?\s*((#|\/\/).*)?$/.match(line))
+            puts "matched #2 '#{line}' match '#{m}'" if debug > 1
             opts = {}
-            if !m[:options].nil?
+            unless m[:options].nil?
               temp = m[:options].split(',')
-              #puts "temp=#{temp}" if debug > 1
+              puts "temp=#{temp}" if debug > 1
               temp.each do |item|
-                if m2 = /\s*(?<quote>['"]?)(?<option>\w+)\k<quote>\s*(=\s*(?<quote2>['"]?)(?<option_value>.*)\k<quote2>)?\s*((#|\/\/).*)?$/.match(item)
-                  #puts "matched #3 '#{line}' match '#{m2}'" if debug > 1
-                  if val = m2[:option_value]
+                if (m2 = /\s*(?<quote>['"]?)(?<option>\w+)\k<quote>\s*(=\s*(?<quote2>['"]?)(?<option_value>.*)\k<quote2>)?\s*((#|\/\/).*)?$/.match(item))
+                  puts "matched #3 '#{line}' match '#{m2}'" if debug > 1
+                  if (val = m2[:option_value])
                     if /.*\|.*/.match(val)
                       val = m2[:option_value].split(/\|/)
                     end
@@ -836,12 +856,12 @@ figure pre.json {
                   end
                   opts[m2[:option].intern] = val
                 else
-                  #puts "parse_blockdiag invalid option #{item}"
-                  #raise "parse_blockdiag invalid option #{item}"
+                  puts "parse_blockdiag invalid option #{item}"
+                  raise "parse_blockdiag invalid option #{item}"
                 end
               end
             end
-            #puts "opts=#{opts} m[lsb]=#{m['lsb']} m[msb]=#{m['msb']}" if debug > 1
+            puts "opts=#{opts} m[lsb]=#{m['lsb']} m[msb]=#{m['msb']}" if debug > 1
             if m[:lsb].nil? || m[:lsb] == ''
               opts[:lsb] = next_lsb
               opts[:msb] = next_lsb + (opts[:len] || 1).to_i - 1
@@ -854,15 +874,25 @@ figure pre.json {
               end
             end
             next_lsb = opts[:msb] + 1
-            #puts "opts=#{opts}" if debug > 1
-            raw[:fields][m[:field].intern] = opts
+            puts "opts=#{opts}" if debug > 1
+            fname = m[:field].intern
+            opts[:orig_name] = fname
+            if raw[:fields][fname].nil?
+              raw[:fields][fname] = opts
+            else
+              fname_index = 1
+              until raw[:fields]["#{fname}_#{fname_index}"].nil?
+                fname_index += 1
+              end
+              raw[:fields]["#{fname}_#{fname_index}"] = opts
+            end
           else
-            #puts "parse_blockdiag unrecognized line #{line}"
-            #raise "parse_blockdiag unrecognized line #{line}"
+            puts "parse_blockdiag unrecognized line #{line}"
+            raise "parse_blockdiag unrecognized line #{line}"
           end
         end
 
-        #puts "parse_blockdiag: returning #{raw}" if debug > 0
+        puts "parse_blockdiag: returning #{raw}" if debug > 0
         raw
       end
 

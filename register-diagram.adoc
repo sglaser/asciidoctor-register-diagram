@@ -26,14 +26,34 @@ v0.2, 2014-11-11 :Initial Revision
 
 // ====== section 1.1.1.1.2
 
+[[REG_Type_0_Hdr_Command_Figure]]
+.Type 0 Hdr: Command Register
+[register]
+--------
+width=16
+default_unused="RsvdP"
+* [0] IO_Space_Enable	[attr="RW"]
+* [1] Mem_Space_Enable	[attr="RW"]
+* [2] Bus_Master_Enable	[attr="RW"]
+* [3] Special_Cycle_Enable	[value="0", is_unused]
+* [4] Memory_Write_and Invalidate	[value="0", is_unused]
+* [5] VGA_Palette_Snoop	[value="0", is_unused]
+* [6] Parity_Error_Response	[attr="RO"]
+* [7] IDSEL_Stepping/Wait_Cycle_Control	[value="0", is_unused]
+* [8] SERR_Enable	[attr="RW"]
+* [9] Fast_Back-to-Back_Transactions_Enable	[value="0", is_unused]
+* [10] Interrupt_Disable	[attr="RW"]
+--------
+
+
 [[register1]]
 .caption 1 -- register
 [register]
 ----
 width=16
-* [0] lowbit
+* [0] lowbit [len=1]
 * [8:1] byte [value=0|1|xx|1|0|0|1|1]
-* [15] topbit
+* [15] topbit [len=1]
 ----
 
 == section 1a
