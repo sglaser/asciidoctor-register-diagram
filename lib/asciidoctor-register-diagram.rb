@@ -34,7 +34,7 @@ module Asciidoctor
 
         @is_unused = try_default(raw, :is_unused, false)
         @show_attr = try_default(raw, :show_attr, reg.show_attr)
-        @attr = try_default(raw, :attr, reg.default_attr.downcase)
+        @attr = try_default(raw, :attr, @is_unused ? reg.default_unused : reg.default_attr)
         @value = try_default(raw, :value, nil)
         @add_class = try_default(raw, :add_class, '')
         if key.nil? || key == ''
@@ -44,18 +44,6 @@ module Asciidoctor
         end
         @name = try_default(raw, :name, @key)
         @orig_name = try_default(raw, :orig_name, @key)
-
-        #@is_unused = raw.has_key?(:is_unused) ? raw[:is_unused] : false
-        #@attr = (raw.has_key?(:attr) ? raw[:attr] : reg.default_attr).downcase
-        #@value =  raw.has_key?(:value) ? raw[:value] : nil#@name = if raw.has_key?(:name)
-        #@add_class = raw.has_key?(:add_class) ? raw[:add_class] : ''
-        #raw[:name]
-        #elsif key
-        #  key
-        #else
-        #  base = is_unused ? '_unused' : 'field'
-        #  (lsb == msb) ? "#{base}_#{lsb}" : "#{base}_#{msb}_#{lsb}"
-        #end
       end
 
       def to_s
@@ -65,7 +53,7 @@ module Asciidoctor
         k = @key && @key != @name ? " key=#{@key}" : ''
         a = @add_class != '' ? " add_class=#{@add_class}" : ''
         w = (@register.name_max_width > 0) ? @register.name_max_width : @name.length
-        return "#{b} %-#{w}s #{k} %-6s#{u}#{a}#{v}" % [@name, @attr]
+        "#{b} %-#{w}s #{k} %-6s#{u}#{a}#{v}" % [@name, @attr]
       end
 
     end
@@ -93,7 +81,7 @@ module Asciidoctor
         @attr[attr] = value
       end
 
-      def append_element(tag, attr ={}, content =[])
+      def append_element(tag, attr = {}, content = [])
         self.append(HtmlElement.new(tag, attr, content))
       end
 
@@ -125,11 +113,11 @@ module Asciidoctor
           temp += " #{key}=\"#{@attr[key]}\""
         end
         prefix = (@content.length <= 1) ? '' : (' ' * level)
-        prefix2 = (@content.length <= 1) ? '' : (' ' * (level+2))
+        prefix2 = (@content.length <= 1) ? '' : (' ' * (level + 2))
         postfix = (@content.length <= 1) ? '' : (level > 0 ? "\n  " : "\n")
         temp = ["#{prefix}<#{@tag}#{temp}>#{postfix}"]
         temp += @content.map {
-            |item| prefix2 + (item.is_a?(HtmlElement) ? item.to_s(level+2) : item.to_s) + postfix
+            |item| prefix2 + (item.is_a?(HtmlElement) ? item.to_s(level + 2) : item.to_s) + postfix
         }
         temp += ["#{prefix}</#{@tag}>#{postfix}"]
         temp = temp.join('')
@@ -349,7 +337,7 @@ module Asciidoctor
 
         @name_max_width = 0
         @field_hash = {}
-        @field_array = [] * (@width+1)
+        @field_array = [] * (@width + 1)
         set_default(:fields, {}).each_pair do |key, item|
           f = RegisterField.new(self, item, key)
           for i in f.lsb..f.msb
@@ -362,24 +350,19 @@ module Asciidoctor
       end
 
       def new_unused_field(msb, lsb)
-        # if full name fits, use it else use 1st char
-        #n = (((msb - lsb) * 2) >= @default_unused.length ? @default_unused : @default_unused[0].upcase)
-        f = RegisterField.new(self, {:msb => msb,
-                                     :lsb => lsb,
-                                     :show_attr => @show_attr,
-                                     #:name => n,
-                                     :name => @default_unused,
-                                     :is_unused => true,
-                                     :attr => @default_unused.downcase})
-        f
+        RegisterField.new(self, {:msb => msb,
+                                 :lsb => lsb,
+                                 :show_attr => @show_attr,
+                                 :name => @default_unused,
+                                 :is_unused => true})
       end
 
       def invent_unused
         lsb = -1 # if non-nil, contains bit# of lsb of a string of unused bits
         for i in 0..@width
           if @field_array[i] && lsb >= 0 # first 'used' bit after stretch of unused bits, invent an 'unused' field
-            f = new_unused_field(i-1, lsb)
-            for j in lsb..(i-1)
+            f = new_unused_field(i - 1, lsb)
+            for j in lsb..(i - 1)
               @field_array[j] = f
             end
             lsb = -1
@@ -389,8 +372,8 @@ module Asciidoctor
           end
         end
         if lsb >= 0
-          f = new_unused_field(@width-1, lsb)
-          for j in lsb..(@width-1)
+          f = new_unused_field(@width - 1, lsb)
+          for j in lsb..(@width - 1)
             @field_array[j] = f
           end
         end
@@ -487,7 +470,7 @@ module Asciidoctor
                               :width => right_of(f.lsb) - left_of(f.msb),
                               :height => @cell_height,
                               :class => 'regFieldBox'})
-            for j in (f.lsb+1)..f.msb
+            for j in (f.lsb + 1)..f.msb
               if (j >= @visible_lsb) && (j <= @visible_msb)
                 g.append_element('line',
                                  {:x1 => right_of(j),
@@ -636,7 +619,7 @@ module Asciidoctor
 
       @@already_included = {}
 
-      def include_link(parent, attrs)
+      def include_link(parent, _attrs)
         return '' if @@already_included[parent.document]
         @@already_included[parent.document] = true
         css = <<-EOS
@@ -898,7 +881,7 @@ figure pre.json {
 
       def process parent, reader, attrs
         lines = reader.lines
-        puts '', '', 'RegisterBlock.process:', lines.join("\n"), '' if debug > 0
+        #puts '', '', 'RegisterBlock.process:', lines.join("\n"), ''
         raw = parse_blockdiag(lines)
 
 

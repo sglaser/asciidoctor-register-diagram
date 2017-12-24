@@ -32,6 +32,7 @@ v0.2, 2014-11-11 :Initial Revision
 --------
 width=16
 default_unused="RsvdP"
+show_attr=true
 * [0] IO_Space_Enable	[attr="RW"]
 * [1] Mem_Space_Enable	[attr="RW"]
 * [2] Bus_Master_Enable	[attr="RW"]
