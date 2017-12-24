@@ -214,11 +214,11 @@ module Asciidoctor
       end
 
       def arc_abs(x, y, rx, ry, x_axis_rotation, large_arc_flag, sweep_flag)
-        @attr[:d] += 'A%3.1f %3.1f %3.1f %3.1f %3.1f %3.1f %p %p ' % [rx, ry, x_axis_rotation, large_arc_flag, sweep_flag, x, y]
+        @attr[:d] += 'A%3.1f %3.1f %3.1f %3.1f %3.1f %p %p ' % [rx, ry, x_axis_rotation, large_arc_flag, sweep_flag, x, y]
       end
 
       def arc_rel(x, y, rx, ry, x_axis_rotation, large_arc_flag, sweep_flag)
-        @attr[:d] += 'a%3.1f %3.1f %3.1f %3.1f %3.1f %3.1f %p %p ' % [rx, ry, x_axis_rotation, large_arc_flag, sweep_flag, x, y]
+        @attr[:d] += 'a%3.1f %3.1f %3.1f %3.1f %3.1f %p %p ' % [rx, ry, x_axis_rotation, large_arc_flag, sweep_flag, x, y]
       end
 
       def fill
@@ -363,7 +363,7 @@ module Asciidoctor
 
       def new_unused_field(msb, lsb)
         # if full name fits, use it else use 1st char
-        n = (((msb - lsb) * 2) >= @default_unused.length ? @default_unused : @default_unused[0].upcase)
+        #n = (((msb - lsb) * 2) >= @default_unused.length ? @default_unused : @default_unused[0].upcase)
         f = RegisterField.new(self, {:msb => msb,
                                      :lsb => lsb,
                                      :show_attr => @show_attr,
@@ -518,12 +518,12 @@ module Asciidoctor
                                    [field_text])
             g.append(text)
 
-            if false && (!f.is_unused) && (f.lsb <= @visible_msb) && (f.msb >= @visible_lsb)
-              dollar_temp_dom = dollar('<span></span>').prependTo(divsvg)
-              unique_id = dollar_temp_dom.makeID('regpict', (f.id ? f.id : (@fig_name + "-" + f.name)))
-              dollar_temp_dom.remove()
-              @svg.change(g, {:id => unique_id})
-            end
+            #if false && (!f.is_unused) && (f.lsb <= @visible_msb) && (f.msb >= @visible_lsb)
+            #  dollar_temp_dom = dollar('<span></span>').prependTo(divsvg)
+            #  unique_id = dollar_temp_dom.makeID('regpict', (f.id ? f.id : (@fig_name + "-" + f.name)))
+            #  dollar_temp_dom.remove()
+            #  @svg.change(g, {:id => unique_id})
+            #end
             unless f.value.nil?
               if f.value.is_a?(Array) && (f.value.length == (f.msb - f.lsb + 1))
                 for i in 0..f.value.length
@@ -838,7 +838,7 @@ figure pre.json {
             puts "matched #1 #{line} match #{m}" if debug > 1
             raw[m[2].intern] = m[4]
             puts "raw=#{raw}" if debug > 1
-          elsif (m = /^\s*\*\s*(\[\s*((?<msb>\d+)\s*:)?\s*(?<lsb>\d+)\s*\])?\s*(?<quote>['"]?)(?<field>[\/\|\-\w \t\(\)]*)\k<quote>\s*(\[(?<options>.*)\])?\s*((#|\/\/).*)?$/.match(line))
+          elsif (m = /^\s*\*\s*(\[\s*((?<msb>\d+)\s*:)?\s*(?<lsb>\d+)\s*\])?\s*(?<quote>['"]?)(?<field>[-\/|*%$@&\[\]{}()!\w #]+)\k<quote>\s*(\[(?<options>.*)\])?\s*((#|\/\/).*)?$/.match(line))
             puts "matched #2 '#{line}' match '#{m}'" if debug > 1
             opts = {}
             unless m[:options].nil?
@@ -856,7 +856,7 @@ figure pre.json {
                   end
                   opts[m2[:option].intern] = val
                 else
-                  puts "parse_blockdiag invalid option #{item}"
+                  puts "parse_blockdiag invalid option #{item}" if debug > 0
                   raise "parse_blockdiag invalid option #{item}"
                 end
               end
@@ -887,7 +887,7 @@ figure pre.json {
               raw[:fields]["#{fname}_#{fname_index}"] = opts
             end
           else
-            puts "parse_blockdiag unrecognized line #{line}"
+            puts "parse_blockdiag unrecognized line #{line}" if debug > 0
             raise "parse_blockdiag unrecognized line #{line}"
           end
         end
@@ -898,7 +898,7 @@ figure pre.json {
 
       def process parent, reader, attrs
         lines = reader.lines
-        #puts '', '', 'RegisterBlock.process:', lines.join("\n"), ''
+        puts '', '', 'RegisterBlock.process:', lines.join("\n"), '' if debug > 0
         raw = parse_blockdiag(lines)
 
 
@@ -1014,7 +1014,7 @@ module Asciidoctor
                                            caption_num = @document.counter_increment("#{key}-number", self)
                                            "#{caption_num}#{item[1..-1]}"
                                          when '('
-                                           if m1 = item.match(/\((\w+)\)(.*)/)
+                                           if (m1 = item.match(/\((\w+)\)(.*)/))
                                              #puts "match m1=#{m1} m1[1]=#{m1[1]} m1[2]=#{m1[2]}"
                                              key2 = "#{m1[1]}-number"
                                              #puts "key2=#{key2}"
