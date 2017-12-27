@@ -10,6 +10,7 @@ v0.2, 2014-11-11 :Initial Revision
 
 == section 1
 
+* register0 <<REG_Type_0_Hdr_Command_Figure>>
 * register1 <<register1>>
 * register2 <<register2>>
 * register3 <<register3>>
@@ -33,6 +34,7 @@ v0.2, 2014-11-11 :Initial Revision
 width=16
 default_unused="RsvdP"
 show_attr=true
+visible_msb=32
 * [0] IO_Space_Enable	[attr="RW"]
 * [1] Mem_Space_Enable	[attr="RW"]
 * [2] Bus_Master_Enable	[attr="RW"]
@@ -47,13 +49,106 @@ show_attr=true
 --------
 
 
+[[register16]]
+.caption 16 -- register16
+[register]
+----
+width=16
+show_attr=true
+* [15:0] byte 16 [value=0|1|2|3|4|5|6|7|8|9|0|1|2|3|4|5, attr="RO"]
+----
+
+[[register15]]
+.caption 15 -- register15
+[register]
+----
+width=16
+show_attr=true
+visible_msb=15
+* [15:0] byte 16 [value=0|1|2|3|4|5|6|7|8|9|0|1|2|3|4|5, attr="RO"]
+----
+
+[[register14]]
+.caption 14 -- register14
+[register]
+----
+width=16
+show_attr=true
+visible_msb=14
+* [15:0] byte 16 [value=0|1|2|3|4|5|6|7|8|9|0|1|2|3|4|5, attr="RO"]
+----
+
+[[register16.1]]
+.caption 16.1 -- register16.1
+[register]
+----
+width=16
+visible_lsb=1
+show_attr=true
+* [15:0] byte 16 [value=0|1|2|3|4|5|6|7|8|9|0|1|2|3|4|5, attr="RO"]
+----
+
+[[register15.1]]
+.caption 15.1 -- register15.1
+[register]
+----
+width=16
+show_attr=true
+visible_lsb=1
+visible_msb=15
+* [15:0] byte 16 [value=0|1|2|3|4|5|6|7|8|9|0|1|2|3|4|5, attr="RO"]
+----
+
+[[register14.1]]
+.caption 14.1 -- register14.1
+[register]
+----
+width=16
+show_attr=true
+visible_lsb=1
+visible_msb=14
+* [15:0] byte 16 [value=0|1|2|3|4|5|6|7|8|9|0|1|2|3|4|5, attr="RO"]
+----
+
+[[register16.2]]
+.caption 16.2 -- register16.2
+[register]
+----
+width=16
+visible_lsb=2
+show_attr=true
+* [15:0] byte 16 [value=0|1|2|3|4|5|6|7|8|9|0|1|2|3|4|5, attr="RO"]
+----
+
+[[register15.2]]
+.caption 15.2 -- register15.2
+[register]
+----
+width=16
+show_attr=true
+visible_lsb=2
+visible_msb=15
+* [15:0] byte 16 [value=0|1|2|3|4|5|6|7|8|9|0|1|2|3|4|5, attr="RO"]
+----
+
+[[register14.2]]
+.caption 14.2 -- register14.2
+[register]
+----
+width=16
+show_attr=true
+visible_lsb=2
+visible_msb=14
+* [15:0] byte 16 [value=0|1|2|3|4|5|6|7|8|9|0|1|2|3|4|5, attr="RO"]
+----
+
 [[register1]]
 .caption 1 -- register
 [register]
 ----
 width=16
 * [0] lowbit [len=1]
-* [8:1] byte [value=0|1|xx|1|0|0|1|1]
+* [8:1] byte [value=0|1|x|1|0|0|1|1]
 * [15] topbit [len=1]
 ----
 
@@ -64,8 +159,9 @@ width=16
 [register]
 ----
 width=16
+visible_msb=10
 * [0] lowbit
-* [8:1] byte [value=0|1|xx|1|0|0|1|1]
+* [8:1] byte [value=0|1|x|1|0|0|1|1]
 * [15] topbit
 ----
 
@@ -79,7 +175,7 @@ image::Photo_Booth_Library_copy.jpg[]
 ----
 width=16
 * [0] lowbit
-* [8:1] byte [value=0|1|xx|1|0|0|1|1]
+* [8:1] byte [value=0|1|x|1|0|0|1|1]
 * [15] topbit
 ----
 
@@ -91,7 +187,7 @@ width=16
 ----
 width=16
 * [0] lowbit
-* [8:1] byte [value=0|1|xx|1|0|0|1|1]
+* [8:1] byte [value=0|1|x|1|0|0|1|1]
 * [15] topbit
 ----
 
@@ -101,7 +197,7 @@ width=16
 ----
 width=16
 * [0] lowbit
-* [8:1] byte [value=0|1|xx|1|0|0|1|1]
+* [8:1] byte [value=0|1|x|1|0|0|1|1]
 * [15] topbit
 ----
 

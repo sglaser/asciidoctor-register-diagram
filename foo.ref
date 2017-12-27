@@ -9,7 +9,7 @@ Nvidia Confidential
 
 foo register
 
-#define NV_DEVICE_FOO                          0x42 /* RWI4F */
+#define NV_DEVICE_FOO                          0x42 /* RWI4R */
 #define NV_DEVICE_FOO_BIT0                      0:0 /* RWIVF */
 #define NV_DEVICE_FOO_BIT26                   26:26 /* RWIVF */
 

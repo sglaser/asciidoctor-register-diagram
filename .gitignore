@@ -27,6 +27,7 @@ mkmf.log
 
 # for IntelliJ IDEA
 .idea
+*.iml
 
 # general output files
 *.log
