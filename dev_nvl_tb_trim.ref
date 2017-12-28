@@ -1,0 +1,1000 @@
+
+
+
+
+
+
+        
+                           FERMI  Trim Reference Manual
+
+                                Rajganesh Jayakar 
+                                Kirk Twardoski
+
+                               NVidia Corporation
+                           2701 San Tomas Expressway
+                             Santa Clara, CA  95050
+
+
+
+
+
+                          
+
+                  $Header: //hw/nvgpu/manuals/dev_trim.ref#10 $
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+This Document contains unpublished, proprietary information and describes 
+subject matter proprietary to NVidia Corporation.  This document may not be
+disclosed to third parties or copied or duplicated in any form without the 
+prior written consent of NVidia Corporation.
+
+
+
+CONTENTS
+
+Chapter  1  -  Introduction
+
+Chapter  2  -  Trim Registers
+
+Appendix A  -  Nothing Yet
+
+Appendix B  -  Key
+
+
+
+0  -  PRELIMINARY MANUAL CAVEATS/WARNINGS/ISSUES/EDITORIAL NOTES
+
+
+
+
+1  -  INTRODUCTION
+
+     This device does a lot of stuff.
+
+Mnemonc Description             Size    Interface
+------- -----------             ----    ---------
+NVL_TB_TRIM   Priv Trim                32K    HOST
+
+#define NV_NVL_TB_TRIM                            0x00138FFF:0x00130000 /* RW--D */
+
+                        Table 1-1  Local Devices
+
+
+
+2  -  Trim Registers
+
+   The TRIM registers are used to set various trimmers/shapers/etc in
+the chip.
+
+
+ 
+
+ 
+/***********************************************************************
+|*                                                                     *|
+|*    Copyright (c) 2006 by NVIDIA Corp.  All rights reserved.         *|
+|*                                                                     *|
+|*  This material constitutes the trade secrets and confidential,      *|
+|*  proprietary information of NVIDIA, Corp.  This material is not to  *|
+|*  be disclosed, reproduced, copied, or used in any manner not        *|
+|*  permitted under license from NVIDIA, Corp.                         *|
+|*                                                                     *|
+***********************************************************************/
+
+ENUMERATION 
+NVL_COMMON_CLK_ALT_SWITCH
+Refer to //hw/doc/gpu/SOC/Clocks/Documentation/NVLink/NVLink_clocks_full.pdf
+    The NV_NVL_TB_TRIM_ONESRC_NVL_COMMON_CLK_ALT_SWITCH controls the clock selection for the ALT_NVL_COMMON_CLK. 
+    ONESRC0 is connected to the output of SPPLL0.
+    ONESRC1 is connected to the mux of  output of SPPLL1 and SYSPLL
+    ONESRC0 within the switch is connected to the bypass input of the NVL_COMMON_CLK_ALT_LDIV. 
+    ONESRC1 within the switch is connected to the VCO    input of the NVL_COMMON_CLK_ALT_LDIV.
+    SWITCH_STOPCLK field gates off the output clock of the one source module.
+    NO Output clock is running.
+    YES Output clock is gated off.
+    SWITCH_COND_STOPCLK field controls if the clock is stopped by the PMU 
+            pwr2clk_stopclks signal. Note that this field has no effect on the STOPCLK field.
+    ENABLED clock is stopped when pwr2clk_stopclks is asserted.
+    DISABLED clock maintains current state when pwr2clk_stopclks is asserted.
+
+
+
+ 31           24 23           16 15            8 7             0
+.-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-.
+|0| | | |0|     |0 0 0 0 0 0|   |0 0 0|       | |0 0 0| |0 0|   | NVL_COMMON_CLK_ALT_SWITCH
+`-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-'
+
+
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH                                                    0x001371c4 /* RW-4R */ 
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_FINALSEL                                                  1:0 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_FINALSEL_INIT                                      0x00000000 /* RWI-V */
+ define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_FINALSEL_SLOWCLK                                   0x00000000 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_FINALSEL_TESTORJTAGCLK                             0x00000001 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_FINALSEL_MISCCLK                                   0x00000002 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_FINALSEL_ONESRCCLK                                 0x00000003 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_ASYNC_MODE                                                4:4 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_ASYNC_MODE_INIT                                    0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_ONESRCCLK                                                 8:8 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_ONESRCCLK_INIT                                     0x00000000 /* RWI-V */
+ define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_ONESRCCLK_ONESRC0                                  0x00000000 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_ONESRCCLK_ONESRC1                                  0x00000001 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_SPARE                                                    12:9 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_SPARE_INIT                                         0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_SLOWCLK                                                 17:16 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_SLOWCLK_INIT                                       0x00000000 /* RWI-V */
+ define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_SLOWCLK_XTAL_IN                                    0x00000000 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_SLOWCLK_XTAL4X                                     0x00000003 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_MISCCLK                                                 26:24 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_MISCCLK_INIT                                       0x00000000 /* RWI-V */
+ define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_MISCCLK_PEX_REFCLK_FAST                            0x00000000 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_MISCCLK_HOSTCLK_DIV                                0x00000001 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_MISCCLK_XTAL_IN_SLOW                               0x00000002 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_STOPCLK                                                 28:28 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_STOPCLK_INIT                                       0x00000000 /* RWI-V */
+ define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_STOPCLK_NO                                         0x00000000 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_STOPCLK_YES                                        0x00000001 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_COND_STOPCLK_EN                                         29:29 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_COND_STOPCLK_EN_INIT                               0x00000000 /* RWI-V */
+ define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_COND_STOPCLK_EN_NO                                 0x00000000 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_COND_STOPCLK_EN_YES                                0x00000001 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_ONESRCCLK1_SELECT                                       30:30 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_ONESRCCLK1_SELECT_INIT                             0x00000000 /* RWI-V */
+ define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_ONESRCCLK1_SELECT_SPPLL1                           0x00000000 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_SWITCH_ONESRCCLK1_SELECT_SYSPLL                           0x00000001 /* RW--V */
+
+
+
+NVL_COMMON_CLK_ALT_LDIV
+Refer to //hw/doc/gpu/SOC/Clocks/Documentation/NVLink/NVLink_clocks_full.pdf
+The NV_NVL_TB_TRIM_NVL_COMMON_CLK_ALT_LDIV registers controls the Linear divider inputs for NVL_COMMON_CLK.
+
+    BYPDIV[5:0]                  Pdiv assoicated with the bypass clock 
+    VCODIV[5:0]                  Pdiv assoicated with the VCO clock
+    GCLKS                        Flatline's the clock to high when the bit is set. 
+    INPUT_CLOCK_GATING         top level Clock gating override signal
+    INT_CLOCK_GATING         Clock gating override signal
+    SDIV14                       Part of the Linear Divider operates at (Div4 mode) quarter frequency of the selected clock. 
+                                 The Linear Divider has to be in Div4 mode before accepting any other inputs 
+                                 This bit puts the Linear Divider into Div4 mode.
+
+    LOAD_CNT[1:0]                This field controls a physical characteristics of the Linear divider. This is expected to have a fixed constant value.
+    GATECLKDLY                   This field controls a physical characteristics of the Linear divider. This is expected to have a fixed constant value.
+    LOAD_CNT[1:0] = 2'b00 and GATECLKDLY = 1'b1 is an illegal value. The Divider will send high frequency pulses on the output                 
+
+
+ 31           24 23           16 15            8 7             0
+.-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-.
+| |0 0 0| | | | |0 0|   |0 0 0 0 0 0|           |0 0|           | NVL_COMMON_CLK_ALT_LDIV
+`-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-'
+
+
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV                                                      0x001372c4 /* RW-4R */ 
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV                                                  5:0 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_INIT                                      0x00000000 /* RWI-V */
+ define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY1                                       0x00000000 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY1P5                                     0x00000001 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY2                                       0x00000002 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY2P5                                     0x00000003 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY3                                       0x00000004 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY3P5                                     0x00000005 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY4                                       0x00000006 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY4P5                                     0x00000007 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY5                                       0x00000008 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY5P5                                     0x00000009 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY6                                       0x0000000A /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY6P5                                     0x0000000B /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY7                                       0x0000000C /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY7P5                                     0x0000000D /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY8                                       0x0000000E /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY8P5                                     0x0000000F /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY9                                       0x00000010 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY9P5                                     0x00000011 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY10                                      0x00000012 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY10P5                                    0x00000013 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY11                                      0x00000014 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY11P5                                    0x00000015 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY12                                      0x00000016 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY12P5                                    0x00000017 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY13                                      0x00000018 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY13P5                                    0x00000019 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY14                                      0x0000001A /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY14P5                                    0x0000001B /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY15                                      0x0000001C /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY15P5                                    0x0000001D /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY16                                      0x0000001E /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY16P5                                    0x0000001F /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY17                                      0x00000020 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY18                                      0x00000022 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY19                                      0x00000024 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY20                                      0x00000026 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY21                                      0x00000028 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY22                                      0x0000002A /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY23                                      0x0000002C /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY24                                      0x0000002E /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY25                                      0x00000030 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY26                                      0x00000032 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY27                                      0x00000034 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY28                                      0x00000036 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY29                                      0x00000038 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY30                                      0x0000003A /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC0DIV_BY31                                      0x0000003C /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV                                                 13:8 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_INIT                                      0x00000000 /* RWI-V */
+ define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY1                                       0x00000000 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY1P5                                     0x00000001 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY2                                       0x00000002 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY2P5                                     0x00000003 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY3                                       0x00000004 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY3P5                                     0x00000005 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY4                                       0x00000006 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY4P5                                     0x00000007 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY5                                       0x00000008 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY5P5                                     0x00000009 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY6                                       0x0000000A /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY6P5                                     0x0000000B /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY7                                       0x0000000C /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY7P5                                     0x0000000D /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY8                                       0x0000000E /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY8P5                                     0x0000000F /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY9                                       0x00000010 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY9P5                                     0x00000011 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY10                                      0x00000012 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY10P5                                    0x00000013 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY11                                      0x00000014 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY11P5                                    0x00000015 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY12                                      0x00000016 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY12P5                                    0x00000017 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY13                                      0x00000018 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY13P5                                    0x00000019 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY14                                      0x0000001A /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY14P5                                    0x0000001B /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY15                                      0x0000001C /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY15P5                                    0x0000001D /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY16                                      0x0000001E /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY16P5                                    0x0000001F /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY17                                      0x00000020 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY18                                      0x00000022 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY19                                      0x00000024 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY20                                      0x00000026 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY21                                      0x00000028 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY22                                      0x0000002A /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY23                                      0x0000002C /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY24                                      0x0000002E /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY25                                      0x00000030 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY26                                      0x00000032 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY27                                      0x00000034 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY28                                      0x00000036 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY29                                      0x00000038 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY30                                      0x0000003A /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_ONESRC1DIV_BY31                                      0x0000003C /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_LOAD_CIP                                                  21:20 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_LOAD_CIP_INIT                                        0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_GATECLKDLY                                                24:24 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_GATECLKDLY_INIT                                      0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_INPUT_CLOCK_GATING                                        25:25 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_INPUT_CLOCK_GATING_INIT                              0x00000000 /* RWI-V */
+ define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_INPUT_CLOCK_GATING_NO                                0x00000000 /* RW--V */
+ define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_INPUT_CLOCK_GATING_YES                               0x00000001 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_INPUT_CLOCK_GATING__PROD                             0x00000001 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_INT_CLOCK_GATING                                          26:26 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_INT_CLOCK_GATING_INIT                                0x00000000 /* RWI-V */
+ define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_INT_CLOCK_GATING_NO                                  0x00000000 /* RW--V */
+ define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_INT_CLOCK_GATING_YES                                 0x00000001 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_INT_CLOCK_GATING__PROD                               0x00000001 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_GCLKS                                                     27:27 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_GCLKS_INIT                                           0x00000000 /* RWI-V */
+ define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_GCLKS_NO                                             0x00000000 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_GCLKS_YES                                            0x00000001 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_SDIV14                                                    31:31 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_SDIV14_INIT                                          0x00000000 /* RWI-V */
+ define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_SDIV14_INDIV1_MODE                                   0x00000000 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_NVL_COMMON_CLK_ALT_LDIV_SDIV14_INDIV4_MODE                                   0x00000001 /* RW--V */
+
+
+
+The PLLS_OUT register controls muxes routing PLL outputs to Pex_tstclk_out.  The defines are set as one field to make
+it easy to choose which clock to view, but it is split internally into two 8bit fields. The lower 8bits are used as 
+selects near the source of the clock inputs, and the upper 8bits are used as selects to choose from various locations
+on the chip.  That is why there are several holes within the indexing of all the selects.  The extra IDX values are
+used internally to figure out where data should route.
+Index Mapping:
+     IDX_SELECT_PEXCLKS         0x11
+     IDX_SELECT_MISCCLKS        0x12
+     IDX_SELECT_CORECLKS        0x13
+     IDX_SELECT_DISPPLLS        0x14
+     IDX_SELECT_DISPCLKS        0x15
+     IDX_SELECT_XTALCLKS        0x16
+     IDX_SELECT_SOCCLKS         0x17 (Tegra only)
+     IDX_SELECT_GPC00           0x08 /* Reserve  8 - 23 for each GPC */
+     IDX_SELECT_GPC01           0x09
+     IDX_SELECT_GPC02           0x0A
+     IDX_SELECT_GPC03           0x0B
+     IDX_SELECT_FBIO0           0x20
+     IDX_SELECT_FBIO1           0x22
+     IDX_SELECT_FBIO2           0x24
+     IDX_SELECT_FBIO3           0x26
+     IDX_SELECT_FBIO4           0x28
+     IDX_SELECT_FBIO5           0x2A
+
+By default only the muxes that are active would be enabled; other muxes would be gated.  
+PLLS_OUT_*ENABLE_OVERRIDE signal is used as an override to enable all the muxes if set to 1'b1
+    ENABLE_OVERRIDE = 1 => all muxes enabled
+    ENABLE_OVERRIDE = 0 => only active muxes enabled (default)
+
+For the special DVCO circuit, it is overloaded on GPCPLL_CLOCKOUT. Since only the GPCPLL or DVCO can be enabled at any
+given time, the DVFS0_MODE bit will control which clock is routed to the pex_tstclk out.
+
+For additional detail, see the wiki @ https://wiki.nvidia.com/gpuhwdept/index.php/Shanghai/ASIC/projects/fermi_gpu_misc/pll_clksrc_nv50/fbio_cdb_testclk#Per-chip_Decode
+
+
+
+ 31           24 23           16 15            8 7             0
+.-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-.
+| |0 0 0 0 0 0 0 0 0 0 0 0 0 0 0|                               | PLLS_OUT
+`-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-'
+
+
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT                                                                     0x00137428 /* RW-4R */ 
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT                                                         15:0 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_INIT                                              0x00000000 /* RWI-V */
+ define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GND                                               0x00000000 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_XTAL_IN                                           0x00001601 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_XTALS_IN                                          0x00001602 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_XTAL4X_CLK                                        0x00001603 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_XTAL16X_CLK                                       0x00001604 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_DEBUG0_SNOOP                                      0x00001605 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_PEX_REFCLK                                        0x00001108 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_XCLK                                              0x00001100 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_JTAG_REG_CLK                                      0x00001101 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_XCLK45X                                           0x00001103 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_XCLK3X                                            0x00001104 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_HOSTCLK                                           0x00001106 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_ALT_NVL0_COMMON_CLK                               0x00001180 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_NVLINK0_TXCLKREF                                  0x00001181 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_NVL0_COMMON_CLK                                   0x00001182 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_NVL0_COMMON_CLK_NOBG_INV                          0x00001183 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_PEX_PLL_RCAL_CLK_UPHY0                            0x00001184 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_ALT_NVL1_COMMON_CLK                               0x00001188 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_NVLINK1_TXCLKREF                                  0x00001189 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_NVL1_COMMON_CLK                                   0x0000118A /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_NVL1_COMMON_CLK_NOBG_INV                          0x0000118B /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_PEX_PLL_RCAL_CLK_UPHY1                            0x0000118C /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_ALT_NVL2_COMMON_CLK                               0x00001190 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_NVLINK2_TXCLKREF                                  0x00001191 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_NVL2_COMMON_CLK                                   0x00001192 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_NVL2_COMMON_CLK_NOBG_INV                          0x00001193 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_PEX_PLL_RCAL_CLK_UPHY2                            0x00001194 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_ALT_NVL3_COMMON_CLK                               0x00001198 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_NVLINK3_TXCLKREF                                  0x00001199 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_NVL3_COMMON_CLK                                   0x0000119A /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_NVL3_COMMON_CLK_NOBG_INV                          0x0000119B /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_PEX_PLL_RCAL_CLK_UPHY3                            0x0000119C /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_RX_BYPASS_REFCLK                                  0x000011A0 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_LX_AUX_TX_RDET_CLK                                0x000011A8 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_UTILSCLK_UPHY                                     0x000011B0 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_NVL_COMMON_CLK_PM                                 0x000011B8 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_PWRCLK                                            0x00001200 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_HUBCLK                                            0x00001201 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SYSCLK_NOBG_CTS_PROBE                             0x00001202 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_ALT_DRAMCLK_PREDIV                                0x00001203 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_LA_CLK_CTS                                        0x00001204 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_RT_DEBUGPORTCLK                                   0x00001205 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_NVDCLK                                            0x00001206 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_UTILSCLK                                          0x00001207 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP0_LTCCLK_CLIPPED                               0x00001780 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP0_DRAMDIV2CLK0_PA0                             0x00001781 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP0_DRAMDIV4CLK0_PA0                             0x00001782 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP0_DRAMDIV2CLK1_PA0                             0x00001783 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP0_DRAMDIV4CLK1_PA0                             0x00001784 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP0_LTCCLK_CTS_PROBE                             0x00001787 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP1_LTCCLK_CLIPPED                               0x00001790 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP1_DRAMDIV2CLK0_PA0                             0x00001791 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP1_DRAMDIV4CLK0_PA0                             0x00001792 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP1_DRAMDIV2CLK1_PA0                             0x00001793 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP1_DRAMDIV4CLK1_PA0                             0x00001794 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP1_LTCCLK_CTS_PROBE                             0x00001797 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP2_LTCCLK_CLIPPED                               0x000017a0 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP2_DRAMDIV2CLK0_PA0                             0x000017a1 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP2_DRAMDIV4CLK0_PA0                             0x000017a2 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP2_DRAMDIV2CLK1_PA0                             0x000017a3 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP2_DRAMDIV4CLK1_PA0                             0x000017a4 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP2_LTCCLK_CTS_PROBE                             0x000017a7 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP3_LTCCLK_CLIPPED                               0x000017b0 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP3_DRAMDIV2CLK0_PA0                             0x000017b1 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP3_DRAMDIV4CLK0_PA0                             0x000017b2 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP3_DRAMDIV2CLK1_PA0                             0x000017b3 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP3_DRAMDIV4CLK1_PA0                             0x000017b4 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP3_LTCCLK_CTS_PROBE                             0x000017b7 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP4_LTCCLK_CLIPPED                               0x000017c0 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP4_DRAMDIV2CLK0_PA0                             0x000017c1 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP4_DRAMDIV4CLK0_PA0                             0x000017c2 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP4_DRAMDIV2CLK1_PA0                             0x000017c3 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP4_DRAMDIV4CLK1_PA0                             0x000017c4 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP4_LTCCLK_CTS_PROBE                             0x000017c7 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP5_LTCCLK_CLIPPED                               0x000017d0 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP5_DRAMDIV2CLK0_PA0                             0x000017d1 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP5_DRAMDIV4CLK0_PA0                             0x000017d2 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP5_DRAMDIV2CLK1_PA0                             0x000017d3 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP5_DRAMDIV4CLK1_PA0                             0x000017d4 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP5_LTCCLK_CTS_PROBE                             0x000017d7 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP6_LTCCLK_CLIPPED                               0x000017e0 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP6_DRAMDIV2CLK0_PA0                             0x000017e1 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP6_DRAMDIV4CLK0_PA0                             0x000017e2 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP6_DRAMDIV2CLK1_PA0                             0x000017e3 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP6_DRAMDIV4CLK1_PA0                             0x000017e4 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP6_LTCCLK_CTS_PROBE                             0x000017e7 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP7_LTCCLK_CLIPPED                               0x000017f0 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP7_DRAMDIV2CLK0_PA0                             0x000017f1 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP7_DRAMDIV4CLK0_PA0                             0x000017f2 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP7_DRAMDIV2CLK1_PA0                             0x000017f3 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP7_DRAMDIV4CLK1_PA0                             0x000017f4 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBP7_LTCCLK_CTS_PROBE                             0x000017f7 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_HUB2CLK_DIV32                                     0x00001300 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_XBAR2CLK_OPFROMSWITCH                             0x00001340 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_XBARPLL_CLKOUT                                    0x00001341 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_XBAR2CLK_LDIV_OUT                                 0x00001342 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_XBARNAFLL_CLKOUT                                  0x00001343 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_XBARNAFLL_CLKOUT_PRE_SKP                          0x00001344 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_XBARNAFLL_UPD_CLK                                 0x00001345 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_ALT_XBAR2CLK                                      0x00001347 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_XBAR2CLK_VCO_IN_LDIV                              0x00001348 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_XBAR2CLK_FROMNCENTRY                              0x00001349 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_PHASE_XBARCLK_FROMNCENTRY                         0x0000134A /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_XBARPLL_REFCLK                                    0x0000134C /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SYS2CLK_FROMPHASEGEN                              0x00001360 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SYSPLL_CLKOUT                                     0x00001361 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SYSPLL_REFCLK                                     0x00001362 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SYSNAFLL_CLKOUT                                   0x00001363 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SYSNAFLL_CLKOUT_PRE_SKP                           0x00001364 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SYSNAFLL_UPD_CLK                                  0x00001365 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SYS2CLK_FROMOSM                                   0x00001366 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_PHASE_SYSCLK_FROMPHASEGEN                         0x0000136A /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_NVD2CLK_O                                         0x00001380 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_NVDPLL_CLKOUT                                     0x00001381 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_NVDNAFLL_CLKOUT                                   0x00001382 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_NVDNAFLL_CLKOUT_PRE_SKP                           0x00001383 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_NVDNAFLL_UPD_CLK                                  0x00001384 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SPPLL0                                            0x00001401 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SPPLL1                                            0x00001402 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_VPLL0                                             0x00001411 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_VPLL1                                             0x00001412 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_VPLL2                                             0x00001413 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_VPLL3                                             0x00001414 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SOR0_CLK                                          0x00001510 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SOR1_CLK                                          0x00001511 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SOR2_CLK                                          0x00001512 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SOR3_CLK                                          0x00001513 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_PIOR2_CLK                                         0x00001514 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_RT_MAUDCLK                                        0x00001516 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_PIOR0_CLK                                         0x00001518 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_PIOR0_PADS_CLK                                    0x00001519 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_PIOR1_CLK                                         0x0000151A /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_PIOR1_PADS_CLK                                    0x0000151B /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SPPLL0_SYNC_CLK                                   0x0000151C /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SPPLL1_SYNC_CLK                                   0x0000151D /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_DAC1_CLK                                          0x0000151F /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_VCLK0                                             0x00001520 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_VPLL0_CLOCKOUT                                    0x00001521 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_REF_VPLL0                                         0x00001522 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_RG0_PCLK                                          0x00001523 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_VCLK1                                             0x00001524 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_VPLL1_CLOCKOUT                                    0x00001525 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_REF_VPLL1                                         0x00001526 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_RG1_PCLK                                          0x00001527 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_VCLK2                                             0x00001528 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_VPLL2_CLOCKOUT                                    0x00001529 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_REF_VPLL2                                         0x0000152a /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_RG2_PCLK                                          0x0000152b /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_VCLK3                                             0x0000152c /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_VPLL3_CLOCKOUT                                    0x0000152d /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_REF_VPLL3                                         0x0000152e /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_RG3_PCLK                                          0x0000152f /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SOR0_2SF0_CLK                                     0x00001531 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SOR0_2SF1_CLK                                     0x00001532 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SOR0_2SF2_CLK                                     0x00001533 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SOR0_2SF3_CLK                                     0x00001534 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_AZA_2XBITCLK_FTM                                  0x00001535 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_AZA_BITCLK                                        0x00001536 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_DISPPLL_CLOCKOUT                                  0x00001537 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_DISPPLL_SYNCCLOCKOUT                              0x00001538 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SF0_CLK                                           0x00001539 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SF1_CLK                                           0x0000153A /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SF2_CLK                                           0x0000153B /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SF3_CLK                                           0x0000153C /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SOR0_PLL_REF_CLK                                  0x0000153D /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SOR1_PLL_REF_CLK                                  0x0000153E /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SOR2_PLL_REF_CLK                                  0x0000153F /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SOR3_PLL_REF_CLK                                  0x00001530 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL00_GPC2CLK_OP                               0x00000800 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL00_GPC2CLK_LDIV_VCO_IP                      0x00000801 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL00_SYNCCLOCKOUT                             0x00000802 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL00_CLOCKOUT                                 0x00000803 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL00_ALT_GPC2CLK                              0x00000804 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL00_GPC2CLK_CLIPPED                          0x00000805 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL00_GPCCLK_CLIPPED                           0x00000806 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL00_GPCCLK_DIV2_CLIPPED                      0x00000807 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL00_GPCCLK_NOG_FTM_CLIPPED                   0x00000808 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL00_GPC2CLK_D                                0x00000809 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL00_PHASE_GPCCLK                             0x0000080a /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL00_GPCCLK_NPE                               0x0000080b /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL00_DEBUG_PHASE_IN_REG6                      0x0000080c /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL00_DEBUG_PHASE_IN_SYNCED                    0x0000080d /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL00_PRB_CLKOUT                               0x0000080e /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL00_GPCCLK_NOBG_CTS_PROBE                    0x0000080f /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL00_GPCNAFLL_CLKOUT                          0x00000810 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL00_GPCNAFLL_CLKOUT_PRE_SKP                  0x00000811 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL00_GPCNAFLL_UPD_CLK                         0x00000812 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL00_GPC2CLK_LDIV_OUT                         0x00000813 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL00_UTILSCLK_LOCAL_FTM                       0x00000814 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL01_GPC2CLK_OP                               0x00000900 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL01_GPC2CLK_LDIV_VCO_IP                      0x00000901 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL01_SYNCCLOCKOUT                             0x00000902 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL01_CLOCKOUT                                 0x00000903 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL01_ALT_GPC2CLK                              0x00000904 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL01_GPC2CLK_CLIPPED                          0x00000905 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL01_GPCCLK_CLIPPED                           0x00000906 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL01_GPCCLK_DIV2_CLIPPED                      0x00000907 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL01_GPCCLK_NOG_FTM_CLIPPED                   0x00000908 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL01_GPC2CLK_D                                0x00000909 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL01_PHASE_GPCCLK                             0x0000090a /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL01_GPCCLK_NPE                               0x0000090b /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL01_DEBUG_PHASE_IN_REG6                      0x0000090c /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL01_DEBUG_PHASE_IN_SYNCED                    0x0000090d /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL01_PRB_CLKOUT                               0x0000090e /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL01_GPCCLK_NOBG_CTS_PROBE                    0x0000090f /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL01_GPCNAFLL_CLKOUT                          0x00000910 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL01_GPCNAFLL_CLKOUT_PRE_SKP                  0x00000911 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL01_GPCNAFLL_UPD_CLK                         0x00000912 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL01_GPC2CLK_LDIV_OUT                         0x00000913 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL01_UTILSCLK_LOCAL_FTM                       0x00000914 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL02_GPC2CLK_OP                               0x00000a00 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL02_GPC2CLK_LDIV_VCO_IP                      0x00000a01 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL02_SYNCCLOCKOUT                             0x00000a02 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL02_CLOCKOUT                                 0x00000a03 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL02_ALT_GPC2CLK                              0x00000a04 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL02_GPC2CLK_CLIPPED                          0x00000a05 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL02_GPCCLK_CLIPPED                           0x00000a06 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL02_GPCCLK_DIV2_CLIPPED                      0x00000a07 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL02_GPCCLK_NOG_FTM_CLIPPED                   0x00000a08 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL02_GPC2CLK_D                                0x00000a09 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL02_PHASE_GPCCLK                             0x00000a0a /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL02_GPCCLK_NPE                               0x00000a0b /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL02_DEBUG_PHASE_IN_REG6                      0x00000a0c /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL02_DEBUG_PHASE_IN_SYNCED                    0x00000a0d /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL02_PRB_CLKOUT                               0x00000a0e /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL02_GPCCLK_NOBG_CTS_PROBE                    0x00000a0f /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL02_GPCNAFLL_CLKOUT                          0x00000a10 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL02_GPCNAFLL_CLKOUT_PRE_SKP                  0x00000a11 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL02_GPCNAFLL_UPD_CLK                         0x00000a12 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL02_GPC2CLK_LDIV_OUT                         0x00000a13 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL02_UTILSCLK_LOCAL_FTM                       0x00000a14 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL03_GPC2CLK_OP                               0x00000b00 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL03_GPC2CLK_LDIV_VCO_IP                      0x00000b01 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL03_SYNCCLOCKOUT                             0x00000b02 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL03_CLOCKOUT                                 0x00000b03 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL03_ALT_GPC2CLK                              0x00000b04 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL03_GPC2CLK_CLIPPED                          0x00000b05 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL03_GPCCLK_CLIPPED                           0x00000b06 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL03_GPCCLK_DIV2_CLIPPED                      0x00000b07 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL03_GPCCLK_NOG_FTM_CLIPPED                   0x00000b08 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL03_GPC2CLK_D                                0x00000b09 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL03_PHASE_GPCCLK                             0x00000b0a /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL03_GPCCLK_NPE                               0x00000b0b /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL03_DEBUG_PHASE_IN_REG6                      0x00000b0c /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL03_DEBUG_PHASE_IN_SYNCED                    0x00000b0d /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL03_PRB_CLKOUT                               0x00000b0e /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL03_GPCCLK_NOBG_CTS_PROBE                    0x00000b0f /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL03_GPCNAFLL_CLKOUT                          0x00000b10 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL03_GPCNAFLL_CLKOUT_PRE_SKP                  0x00000b11 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL03_GPCNAFLL_UPD_CLK                         0x00000b12 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL03_GPC2CLK_LDIV_OUT                         0x00000b13 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL03_UTILSCLK_LOCAL_FTM                       0x00000b14 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL04_GPC2CLK_OP                               0x00000c00 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL04_GPC2CLK_LDIV_VCO_IP                      0x00000c01 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL04_SYNCCLOCKOUT                             0x00000c02 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL04_CLOCKOUT                                 0x00000c03 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL04_ALT_GPC2CLK                              0x00000c04 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL04_GPC2CLK_CLIPPED                          0x00000c05 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL04_GPCCLK_CLIPPED                           0x00000c06 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL04_GPCCLK_DIV2_CLIPPED                      0x00000c07 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL04_GPCCLK_NOG_FTM_CLIPPED                   0x00000c08 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL04_GPC2CLK_D                                0x00000c09 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL04_PHASE_GPCCLK                             0x00000c0a /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL04_GPCCLK_NPE                               0x00000c0b /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL04_DEBUG_PHASE_IN_REG6                      0x00000c0c /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL04_DEBUG_PHASE_IN_SYNCED                    0x00000c0d /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL04_PRB_CLKOUT                               0x00000c0e /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL04_GPCCLK_NOBG_CTS_PROBE                    0x00000c0f /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL04_GPCNAFLL_CLKOUT                          0x00000c10 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL04_GPCNAFLL_CLKOUT_PRE_SKP                  0x00000c11 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL04_GPCNAFLL_UPD_CLK                         0x00000c12 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL04_GPC2CLK_LDIV_OUT                         0x00000c13 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL04_UTILSCLK_LOCAL_FTM                       0x00000c14 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL05_GPC2CLK_OP                               0x00000d00 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL05_GPC2CLK_LDIV_VCO_IP                      0x00000d01 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL05_SYNCCLOCKOUT                             0x00000d02 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL05_CLOCKOUT                                 0x00000d03 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL05_ALT_GPC2CLK                              0x00000d04 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL05_GPC2CLK_CLIPPED                          0x00000d05 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL05_GPCCLK_CLIPPED                           0x00000d06 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL05_GPCCLK_DIV2_CLIPPED                      0x00000d07 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL05_GPCCLK_NOG_FTM_CLIPPED                   0x00000d08 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL05_GPC2CLK_D                                0x00000d09 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL05_PHASE_GPCCLK                             0x00000d0a /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL05_GPCCLK_NPE                               0x00000d0b /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL05_DEBUG_PHASE_IN_REG6                      0x00000d0c /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL05_DEBUG_PHASE_IN_SYNCED                    0x00000d0d /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL05_PRB_CLKOUT                               0x00000d0e /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL05_GPCCLK_NOBG_CTS_PROBE                    0x00000d0f /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL05_GPCNAFLL_CLKOUT                          0x00000d10 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL05_GPCNAFLL_CLKOUT_PRE_SKP                  0x00000d11 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL05_GPCNAFLL_UPD_CLK                         0x00000d12 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL05_GPC2CLK_LDIV_OUT                         0x00000d13 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_GPCPLL05_UTILSCLK_LOCAL_FTM                       0x00000d14 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_XBAR2CLK_FROMPHASEGEN                             0x00001801 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_PHASE_XBARCLK_FROMPHASEGEN                        0x00001802 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_PHASE_XBARCLK_NG_FROMPHASEGEN                     0x00001803 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_XBARCLK_FROMCLKGEN_IN_XBAR                        0x00001804 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SYS2CLK_FROMNCENTRY                               0x00001805 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_PHASE_SYSCLK_FROMNCENTRY                          0x00001806 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SYS2CLK_FROMCLKGEN                                0x00001807 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_SYSCLK_FROMCLKGEN_IN_XBAR                         0x00001808 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO0_CMD1_BR8CLK_PBR4                            0x00002002 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO0_BR4CLK                                      0x00002003 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO0_BYTE4_BR8CLK_PBR4                           0x00002004 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO0_BYTE5_BR8CLK_PBR4                           0x00002005 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO0_BYTE6_BR8CLK_PBR4                           0x00002006 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO0_BYTE7_BR8CLK_PBR4                           0x00002007 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO0_BR8CLK_PBR4                                 0x0000200A /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO0_BR8CLK_NBR4                                 0x00002009 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO0_BR2CLK                                      0x00002100 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO0_DLL_TESTDLL0                                0x00002101 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO0_CMD0_BR8CLK_PBR4                            0x00002102 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO0_REFMPLL_CLKOUT                              0x00002103 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO0_BYTE0_BR8CLK_PBR4                           0x00002104 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO0_BYTE1_BR8CLK_PBR4                           0x00002105 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO0_BYTE2_BR8CLK_PBR4                           0x00002106 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO0_BYTE3_BR8CLK_PBR4                           0x00002107 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO1_BR4CLK                                      0x00002203 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO1_DLL_TESTDLL1                                0x00002201 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO1_CMD1_BR8CLK_PBR4                            0x00002202 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO1_BYTE4_BR8CLK_PBR4                           0x00002204 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO1_BYTE5_BR8CLK_PBR4                           0x00002205 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO1_BYTE6_BR8CLK_PBR4                           0x00002206 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO1_BYTE7_BR8CLK_PBR4                           0x00002207 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO1_BR8CLK_PBR4                                 0x0000220A /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO1_BR8CLK_NBR4                                 0x00002209 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO1_BR2CLK                                      0x00002300 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO1_DLL_TESTDLL0                                0x00002301 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO1_CMD0_BR8CLK_PBR4                            0x00002302 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO1_REFMPLL_CLKOUT                              0x00002303 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO1_BYTE0_BR8CLK_PBR4                           0x00002304 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO1_BYTE1_BR8CLK_PBR4                           0x00002305 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO1_BYTE2_BR8CLK_PBR4                           0x00002306 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO1_BYTE3_BR8CLK_PBR4                           0x00002307 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO2_BR4CLK                                      0x00002403 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO2_DLL_TESTDLL1                                0x00002401 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO2_CMD1_BR8CLK_PBR4                            0x00002402 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO2_BYTE4_BR8CLK_PBR4                           0x00002404 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO2_BYTE5_BR8CLK_PBR4                           0x00002405 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO2_BYTE6_BR8CLK_PBR4                           0x00002406 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO2_BYTE7_BR8CLK_PBR4                           0x00002407 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO2_BR8CLK_PBR4                                 0x0000240A /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO2_BR8CLK_NBR4                                 0x00002409 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO2_BR2CLK                                      0x00002500 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO2_DLL_TESTDLL0                                0x00002501 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO2_CMD0_BR8CLK_PBR4                            0x00002502 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO2_REFMPLL_CLKOUT                              0x00002503 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO2_BYTE0_BR8CLK_PBR4                           0x00002504 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO2_BYTE1_BR8CLK_PBR4                           0x00002505 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO2_BYTE2_BR8CLK_PBR4                           0x00002506 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO2_BYTE3_BR8CLK_PBR4                           0x00002507 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO3_BR4CLK                                      0x00002603 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO3_DLL_TESTDLL1                                0x00002601 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO3_CMD1_BR8CLK_PBR4                            0x00002602 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO3_BYTE4_BR8CLK_PBR4                           0x00002604 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO3_BYTE5_BR8CLK_PBR4                           0x00002605 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO3_BYTE6_BR8CLK_PBR4                           0x00002606 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO3_BYTE7_BR8CLK_PBR4                           0x00002607 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO3_BR8CLK_PBR4                                 0x0000260A /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO3_BR8CLK_NBR4                                 0x00002609 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO3_BR2CLK                                      0x00002700 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO3_DLL_TESTDLL0                                0x00002701 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO3_CMD0_BR8CLK_PBR4                            0x00002702 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO3_REFMPLL_CLKOUT                              0x00002703 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO3_BYTE0_BR8CLK_PBR4                           0x00002704 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO3_BYTE1_BR8CLK_PBR4                           0x00002705 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO3_BYTE2_BR8CLK_PBR4                           0x00002706 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO3_BYTE3_BR8CLK_PBR4                           0x00002707 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO4_BR4CLK                                      0x00002803 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO4_DLL_TESTDLL1                                0x00002801 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO4_CMD1_BR8CLK_PBR4                            0x00002802 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO4_BYTE4_BR8CLK_PBR4                           0x00002804 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO4_BYTE5_BR8CLK_PBR4                           0x00002805 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO4_BYTE6_BR8CLK_PBR4                           0x00002806 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO4_BYTE7_BR8CLK_PBR4                           0x00002807 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO4_BR8CLK_PBR4                                 0x0000280A /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO4_BR8CLK_NBR4                                 0x00002809 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO4_BR2CLK                                      0x00002900 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO4_DLL_TESTDLL0                                0x00002901 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO4_CMD0_BR8CLK_PBR4                            0x00002902 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO4_REFMPLL_CLKOUT                              0x00002903 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO4_BYTE0_BR8CLK_PBR4                           0x00002904 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO4_BYTE1_BR8CLK_PBR4                           0x00002905 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO4_BYTE2_BR8CLK_PBR4                           0x00002906 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO4_BYTE3_BR8CLK_PBR4                           0x00002907 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO5_BR4CLK                                      0x00002a03 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO5_DLL_TESTDLL1                                0x00002a01 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO5_CMD1_BR8CLK_PBR4                            0x00002a02 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO5_BYTE4_BR8CLK_PBR4                           0x00002a04 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO5_BYTE5_BR8CLK_PBR4                           0x00002a05 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO5_BYTE6_BR8CLK_PBR4                           0x00002a06 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO5_BYTE7_BR8CLK_PBR4                           0x00002a07 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO5_BR8CLK_PBR4                                 0x00002a0A /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO5_BR8CLK_NBR4                                 0x00002a09 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO5_BR2CLK                                      0x00002b00 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO5_DLL_TESTDLL0                                0x00002b01 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO5_CMD0_BR8CLK_PBR4                            0x00002b02 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO5_REFMPLL_CLKOUT                              0x00002b03 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO5_BYTE0_BR8CLK_PBR4                           0x00002b04 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO5_BYTE1_BR8CLK_PBR4                           0x00002b05 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO5_BYTE2_BR8CLK_PBR4                           0x00002b06 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_FBIO5_BYTE3_BR8CLK_PBR4                           0x00002b07 /* RW--V */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_ENABLE_OVERRIDE                                        31:31 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_PLLS_OUT_PLLS_O_SRC_SELECT_ENABLE_OVERRIDE_INIT                              0x00000000 /* RWI-V */
+
+
+
+ 31           24 23           16 15            8 7             0
+.-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-.
+|0 0 0 0 0 0 0 0|               |0 0 0| |0 0|                   | NVLINK_UPHY_CFG
+`-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-'
+
+
+#define NV_NVL_TB_TRIM_SYS_NVLINK_UPHY_CFG                                                              0x00132410 /* RW-4R */ 
+#define NV_NVL_TB_TRIM_SYS_NVLINK_UPHY_CFG_LOCKDECT_WAIT_DLY_LENGTH                                            9:0 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_UPHY_CFG_LOCKDECT_WAIT_DLY_LENGTH_INIT                                0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_UPHY_CFG_PHY2CLKS_USE_LOCKDET                                              12:12 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_UPHY_CFG_PHY2CLKS_USE_LOCKDET_INIT                                    0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_UPHY_CFG_NVLINK_WAIT_DLY                                                   23:16 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_UPHY_CFG_NVLINK_WAIT_DLY_INIT                                         0x00000000 /* RWI-V */
+
+
+
+ 31           24 23           16 15            8 7             0
+.-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-.
+|0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0| | | | NVLINK_SWITCH_ASYNC_MODE
+`-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-'
+
+
+#define NV_NVL_TB_TRIM_SYS_NVLINK_SWITCH_ASYNC_MODE                                                     0x00132414 /* RW-4R */ 
+#define NV_NVL_TB_TRIM_SYS_NVLINK_SWITCH_ASYNC_MODE_LINKCLK_RX_SW_SWITCH_ASYNC_MODE                            0:0 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_SWITCH_ASYNC_MODE_LINKCLK_RX_SW_SWITCH_ASYNC_MODE_INIT                0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_SWITCH_ASYNC_MODE_NVL_RX_LANE_ASYNC_MODE                                     1:1 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_SWITCH_ASYNC_MODE_NVL_RX_LANE_ASYNC_MODE_INIT                         0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_SWITCH_ASYNC_MODE_TX_CLK_SWITCH_ASYNC_MODE                                   2:2 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_SWITCH_ASYNC_MODE_TX_CLK_SWITCH_ASYNC_MODE_INIT                       0x00000000 /* RWI-V */
+
+
+
+ 31           24 23           16 15            8 7             0
+.-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-.
+|0 0| | | | |   | | | | | | | | |       |0| | | | | | | |0 0 0| | NVLINK_CTRL
+`-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-'
+
+
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL(i)                                                      (0x00132420+(i)*16) /* RW-4A */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL__SIZE_1                                                                   6 /*       */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_UNIT2CLKS_PLL_TURN_OFF                                                  0:0 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_UNIT2CLKS_PLL_TURN_OFF_INIT                                      0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_OVERRIDE_STATUS                                                         4:4 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_OVERRIDE_STATUS_INIT                                             0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_NVL_COMMON_CLK_SRC_SELECT_DONE_CYA                                      5:5 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_NVL_COMMON_CLK_SRC_SELECT_DONE_CYA_INIT                          0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_NVL_PL_TX_CLK_DISABLE_DONE_CYA                                          6:6 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_NVL_PL_TX_CLK_DISABLE_DONE_CYA_INIT                              0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_FLAG_CAL_VALID_CYA                                                      7:7 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_FLAG_CAL_VALID_CYA_INIT                                          0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_OVERRIDE_CLOCKS_CONTROL                                                 8:8 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_OVERRIDE_CLOCKS_CONTROL_INIT                                     0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_NVL_PL_TX_CLK_DISABLE_CYA                                               9:9 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_NVL_PL_TX_CLK_DISABLE_CYA_INIT                                   0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_NVL_TX_CLK_SRC_SELECT_CYA                                             10:10 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_NVL_TX_CLK_SRC_SELECT_CYA_INIT                                   0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_NVL_RX_CLK_SRC_SELECT_CYA                                             15:12 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_NVL_RX_CLK_SRC_SELECT_CYA_INIT                                   0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_OVERRIDE_INPUT_STATUS                                                 16:16 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_OVERRIDE_INPUT_STATUS_INIT                                       0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_PHY2CLKS_CAL_DONE_CYA                                                 17:17 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_PHY2CLKS_CAL_DONE_CYA_INIT                                       0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_PHY2CLKS_RCAL_DONE_CYA                                                18:18 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_PHY2CLKS_RCAL_DONE_CYA_INIT                                      0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_CLKS2PHY_RATE_ID_CYA                                                  19:19 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_CLKS2PHY_RATE_ID_CYA_INIT                                        0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_OVERRIDE_PLL_CONTROLS                                                 20:20 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_OVERRIDE_PLL_CONTROLS_INIT                                       0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_CLKS2PHY_RCAL_EN_CYA                                                  21:21 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_CLKS2PHY_RCAL_EN_CYA_INIT                                        0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_CLKS2PHY_CAL_EN_CYA                                                   22:22 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_CLKS2PHY_CAL_EN_CYA_INIT                                         0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_CLKS2PHY_IDDQ_CYA                                                     23:23 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_CLKS2PHY_IDDQ_CYA_INIT                                           0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_CLKS2PHY_SLEEP_CYA                                                    25:24 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_CLKS2PHY_SLEEP_CYA_INIT                                          0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_CLKS2PHY_ENABLE_CYA                                                   26:26 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_CLKS2PHY_ENABLE_CYA_INIT                                         0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_CLKS2NVLINK_PLL_RESET_CYA                                             27:27 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_CLKS2NVLINK_PLL_RESET_CYA_INIT                                   0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_PLL_OFF_CYA                                                           28:28 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_PLL_OFF_CYA_INIT                                                 0x00000000 /* RWI-V */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_PHY2CLKS_LOCKDET_STATUS_CYA                                           29:29 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_CTRL_PHY2CLKS_LOCKDET_STATUS_CYA_INIT                                 0x00000000 /* RWI-V */
+
+
+
+ 31           24 23           16 15            8 7             0
+.-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-.
+|0 0 0 0 0 0|   |       |0|     |0|     |0 0 0| |0 0| | |0 0 0 0  NVLINK_STATUS
+`-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-'
+
+
+#define NV_NVL_TB_TRIM_SYS_NVLINK_STATUS(i)                                                    (0x00132424+(i)*16) /* R--4A */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_STATUS__SIZE_1                                                                 6 /*       */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_STATUS_FLAG_CAL_VALID                                                        4:4 /* R--UF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_STATUS_PLL_OFF                                                               5:5 /* R--UF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_STATUS_CLKS2NVL_TXCLK_STS                                                    8:8 /* R--UF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_STATUS_CLKS2NVL_RXCLK_STS                                                  14:12 /* R--UF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_STATUS_CURRENT_STATE_NVLINK_FSM                                            18:16 /* R--UF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_STATUS_CURRENT_STATE_UPHY_FSM                                              23:20 /* R--UF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_STATUS_CURRENT_STATE_UPHY_RCAL                                             25:24 /* R--UF */
+
+
+
+ 31           24 23           16 15            8 7             0
+.-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-.
+|                                                               | NVLINK_SPARE_RW
+`-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-'
+
+
+#define NV_NVL_TB_TRIM_SYS_NVLINK_SPARE_RW(i)                                                  (0x00132428+(i)*16) /* RW-4A */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_SPARE_RW__SIZE_1                                                               6 /*       */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_SPARE_RW_NVLINK_SPARE_RW                                                    31:0 /* RWIUF */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_SPARE_RW_NVLINK_SPARE_RW_INIT                                         0x00000000 /* RWI-V */
+
+
+
+ 31           24 23           16 15            8 7             0
+.-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-.
+|                                                               | NVLINK_SPARE_RO
+`-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-'
+
+
+#define NV_NVL_TB_TRIM_SYS_NVLINK_SPARE_RO(i)                                                  (0x0013242c+(i)*16) /* R--4A */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_SPARE_RO__SIZE_1                                                               6 /*       */
+#define NV_NVL_TB_TRIM_SYS_NVLINK_SPARE_RO_NVLINK_SPARE_RO                                                    31:0 /* R--UF */
+
+
+
+These defines exist for backwards SW compatibility, but they are OBSOLETE, the HW registers no longer exist.
+The defines exist only to allow SW to compile binaries for multiple GPUs and deprecated features.
+Do not attempt to use these registers, they will most likely time out or return zeros - the function is undefined.
+Make sure to check the CAPABILITY bits to see what is allowed on this chip.
+
+
+
+
+
+APPENDIX B  -  KEY
+This legend is now included from TOT/manuals/key_legend.ref.  Any key that is marked "legacy"
+should only be used in the manual files listed in the comment.  The "legacy" keys are deprecated
+and will be phased out.
+
+Each define in the .ref file has a 5 field code to say what kind of define it is: i.e. /* RW--R */
+The following legend shows accepted values for each of the 5 fields:
+  Read, Write, Internal State, Declaration/Size, and Define Indicator.
+
+  Read
+    ' ' = Other Information
+    '-' = Field is part of a write-only register
+    'C' = Value read is always the same, constant value line follows (C)
+    'R' = Value is read
+
+
+  Write
+    ' ' = Other Information
+    '-' = Must not be written (D), value ignored when written (R,A,F)
+    'W' = Can be written
+
+
+  Internal State
+    ' ' = Other Information
+    '-' = No internal state
+    'X' = Internal state, initial value is unknown
+    'I' = Internal state, initial value is known and follows (I), see "Reset Signal" section for signal.
+    'E' = Internal state, initial value is known and follows (E), see "Reset Signal" section for signal.
+    'B' = Internal state, initial value is known and follows (B), see "Reset Signal" section for signal.
+    'C' = Internal state, initial value is known and follows (C), see "Reset Signal" section for signal.
+
+    'V' = (legacy) Internal state, initialize at volatile reset (legacy: Only used in internal_bundles.ref)
+    'D' = (legacy) Internal state, default initial value at object creation (legacy: Only used in dev_ram.ref)
+    'C' = (legacy) Internal state, initial value at object creation (legacy:  Only used in usr_2074.ref)
+    'C' = (legacy) Internal state, class-based initial value at object creation (legacy: Only used in dev_ram.ref)
+
+
+  Declaration/Size
+    ' ' = Other Information
+    '-' = Does Not Apply
+    'V' = Type is void
+    'U' = Type is unsigned integer
+    'S' = Type is signed integer
+    'F' = Type is IEEE floating point
+    '1' = Byte size (008)
+    '2' = Short size (016)
+    '3' = Three byte size (024)
+    '4' = Word size (032)
+    '8' = Double size (064)
+
+
+  Define Indicator
+    ' ' = Other Information
+    'C' = Clear value
+    'D' = Device
+    'L' = Logical device.  Used by ness/nvm for manuals replication
+    'M' = Memory
+    'R' = Register
+    'A' = Array of Registers
+    'F' = Field
+    'V' = Value
+    'T' = Task
+    'P' = Phantom Register
+
+    'B' = (legacy) Bundle address (legacy: Only used in gr_bundles.ref and internal_bundles.ref)
+    'G' = (legacy) General purpose configuration register (legacy: Only used in dev_disp.ref, dev_mmu.ref, dev_pmu_vmacro.ref, dev_pwr_pmu_plus.ref, dev_ram.ref, dev_uvm.ref, usr_2074.ref, usr_motionsearch.ref)
+    'C' = (legacy) Class (legacy: Only used in dev_ram.ref and usr_*.ref)
+
+  Reset signal defaults for graphics engine registers.
+    All graphics engine registers use the following defaults for reset signals:
+     'E' = initialized with engine_reset_
+     'I' = initialized with context_reset_
+     'B' = initialized with reset_IB_dly_ 
+
+  Reset signal
+    For units that differ from the graphics engine defaults, the reset signals should be defined here:
+    
+
+
+
+
+
+
+
+
