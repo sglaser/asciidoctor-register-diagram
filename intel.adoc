@@ -1,0 +1,1396 @@
+= intel_pte.ref
+Intel Corporation
+2017-12-27
+:numbered:
+:sectnumlevels: 9
+:toc:
+:ref_file:
+:dump_asciidoc: intel.adoc
+:insert_ref_list!:
+
+// asciidoc begin_chunk
+
+== INTEL_ROOT_TABLE
+
+
+
+
+[source,options="nowrap"]
+    #define INTEL_ROOT_TABLE                              0x100:0x000   /* RW--D */
+
+=== INTEL_ROOT_TABLE_ADDR
+
+
+
+
+HAW == Hardware Address Width.  In physical addresses, bits > HAW are Reserved
+
+    #define HAW     48
+
+
+
+
+[[INTEL_ROOT_TABLE_ADDR]]
+.INTEL_ROOT_TABLE_ADDR Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [11:11] RTT [attr="RW"]
+* [47:12] RTA [attr="RW"]
+* [63:48] RESERVED_HAW [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [11:11] RTT [attr="RW"]
+* [47:12] RTA [attr="RW"]
+* [63:48] RESERVED_HAW [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_ROOT_TABLE_ADDR                          0x00000000   /* RWI8R */
+    #define INTEL_ROOT_TABLE_ADDR_RTT                           11:11   /* RWIVF */
+    #define INTEL_ROOT_TABLE_ADDR_RTT_INIT                        0x0   /* RWI-V */
+    #define INTEL_ROOT_TABLE_ADDR_RTT_NONEXTENDED                 0x0   /* RWI-V */
+    #define INTEL_ROOT_TABLE_ADDR_RTT_EXTENDED                    0x1   /* RWI-V */
+    #define INTEL_ROOT_TABLE_ADDR_RTA                           47:12   /* RWIVF */
+    #define INTEL_ROOT_TABLE_ADDR_RTA_INIT                        0x0   /* RWI-V */
+    #define INTEL_ROOT_TABLE_ADDR_RESERVED_HAW                  63:48   /* RWIVF */
+    #define INTEL_ROOT_TABLE_ADDR_RESERVED_HAW_INIT               0x0   /* RWI-V */
+
+=== INTEL_ROOT_TABLE_ENTRY
+
+
+
+
+
+
+[[INTEL_ROOT_TABLE_ENTRY]]
+.INTEL_ROOT_TABLE_ENTRY Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [0:0] P [attr="RW"]
+* [47:12] CTP [attr="RW"]
+* [63:48] RESERVED_HAW [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [0:0] P [attr="RW"]
+* [47:12] CTP [attr="RW"]
+* [63:48] RESERVED_HAW [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_ROOT_TABLE_ENTRY                         0x00000008   /* RWI8R */
+    #define INTEL_ROOT_TABLE_ENTRY_P                              0:0   /* RW-VF */
+    #define INTEL_ROOT_TABLE_ENTRY_CTP                          47:12   /* RW-VF */
+    #define INTEL_ROOT_TABLE_ENTRY_RESERVED_HAW                 63:48   /* RWIVF */
+    #define INTEL_ROOT_TABLE_ENTRY_RESERVED_HAW_INIT              0x0   /* RWI-V */
+
+=== INTEL_EXT_ROOT_TABLE_ENTRY0
+
+
+
+
+
+[[INTEL_EXT_ROOT_TABLE_ENTRY0]]
+.INTEL_EXT_ROOT_TABLE_ENTRY0 Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [0:0] LP [attr="RW"]
+* [47:12] LCTP [attr="RW"]
+* [63:48] RESERVED_HAW [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [0:0] LP [attr="RW"]
+* [47:12] LCTP [attr="RW"]
+* [63:48] RESERVED_HAW [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_EXT_ROOT_TABLE_ENTRY0                    0x00000010   /* RWI8R */
+    #define INTEL_EXT_ROOT_TABLE_ENTRY0_LP                        0:0   /* RW-VF */
+    #define INTEL_EXT_ROOT_TABLE_ENTRY0_LCTP                    47:12   /* RW-VF */
+    #define INTEL_EXT_ROOT_TABLE_ENTRY0_RESERVED_HAW            63:48   /* RWIVF */
+    #define INTEL_EXT_ROOT_TABLE_ENTRY0_RESERVED_HAW_INIT         0x0   /* RWI-V */
+
+=== INTEL_EXT_ROOT_TABLE_ENTRY1
+
+
+
+
+
+[[INTEL_EXT_ROOT_TABLE_ENTRY1]]
+.INTEL_EXT_ROOT_TABLE_ENTRY1 Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [0:0] UP [attr="RW"]
+* [47:12] UCTP [attr="RW"]
+* [63:48] RESERVED_HAW [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [0:0] UP [attr="RW"]
+* [47:12] UCTP [attr="RW"]
+* [63:48] RESERVED_HAW [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_EXT_ROOT_TABLE_ENTRY1                    0x00000018   /* RWI8R */
+    #define INTEL_EXT_ROOT_TABLE_ENTRY1_UP                        0:0   /* RW-VF */
+    #define INTEL_EXT_ROOT_TABLE_ENTRY1_UCTP                    47:12   /* RW-VF */
+    #define INTEL_EXT_ROOT_TABLE_ENTRY1_RESERVED_HAW            63:48   /* RWIVF */
+    #define INTEL_EXT_ROOT_TABLE_ENTRY1_RESERVED_HAW_INIT         0x0   /* RWI-V */
+
+=== INTEL_CONTEXT_ENTRY0
+
+
+
+
+
+[[INTEL_CONTEXT_ENTRY0]]
+.INTEL_CONTEXT_ENTRY0 Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [0:0] P [attr="RW"]
+* [1:1] FPD [attr="RW"]
+* [3:2] T [attr="RW"]
+* [47:12] LPTPTR [attr="RW"]
+* [63:48] RESERVED_HAW [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [0:0] P [attr="RW"]
+* [1:1] FPD [attr="RW"]
+* [3:2] T [attr="RW"]
+* [47:12] LPTPTR [attr="RW"]
+* [63:48] RESERVED_HAW [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_CONTEXT_ENTRY0                           0x00000020   /* RWI8R */
+    #define INTEL_CONTEXT_ENTRY0_P                                0:0   /* RW-VF */
+    #define INTEL_CONTEXT_ENTRY0_FPD                              1:1   /* RW-VF */
+    #define INTEL_CONTEXT_ENTRY0_T                                3:2   /* RW-VF */
+    #define INTEL_CONTEXT_ENTRY0_LPTPTR                         47:12   /* RW-VF */
+    #define INTEL_CONTEXT_ENTRY0_RESERVED_HAW                   63:48   /* RWIVF */
+    #define INTEL_CONTEXT_ENTRY0_RESERVED_HAW_INIT                0x0   /* RWI-V */
+
+=== INTEL_CONTEXT_ENTRY1
+
+
+
+
+
+[[INTEL_CONTEXT_ENTRY1]]
+.INTEL_CONTEXT_ENTRY1 Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [2:0] AW [attr="RW"]
+* [6:3] IGN [attr="RW"]
+* [23:8] DID [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [2:0] AW [attr="RW"]
+* [6:3] IGN [attr="RW"]
+* [23:8] DID [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_CONTEXT_ENTRY1                           0x00000028   /* RWI8R */
+    #define INTEL_CONTEXT_ENTRY1_AW                               2:0   /* RW-VF */
+    #define INTEL_CONTEXT_ENTRY1_IGN                              6:3   /* RW-VF */
+    #define INTEL_CONTEXT_ENTRY1_DID                             23:8   /* RW-VF */
+
+=== INTEL_EXT_CONTEXT_ENTRY0
+
+
+
+
+
+[[INTEL_EXT_CONTEXT_ENTRY0]]
+.INTEL_EXT_CONTEXT_ENTRY0 Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [0:0] P [attr="RW"]
+* [1:1] FPD [attr="RW"]
+* [4:2] T [attr="RW"]
+* [7:5] EMT [attr="RW"]
+* [8:8] DINVE [attr="RW"]
+* [9:9] PRE [attr="RW"]
+* [10:10] NESTE [attr="RW"]
+* [11:11] PASIDE [attr="RW"]
+* [47:12] SLPTPTR [attr="RW"]
+* [63:48] RESERVED_HAW [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [0:0] P [attr="RW"]
+* [1:1] FPD [attr="RW"]
+* [4:2] T [attr="RW"]
+* [7:5] EMT [attr="RW"]
+* [8:8] DINVE [attr="RW"]
+* [9:9] PRE [attr="RW"]
+* [10:10] NESTE [attr="RW"]
+* [11:11] PASIDE [attr="RW"]
+* [47:12] SLPTPTR [attr="RW"]
+* [63:48] RESERVED_HAW [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_EXT_CONTEXT_ENTRY0                       0x00000010   /* RWI8R */
+    #define INTEL_EXT_CONTEXT_ENTRY0_P                            0:0   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY0_FPD                          1:1   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY0_T                            4:2   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY0_EMT                          7:5   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY0_DINVE                        8:8   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY0_PRE                          9:9   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY0_NESTE                      10:10   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY0_PASIDE                     11:11   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY0_SLPTPTR                    47:12   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY0_RESERVED_HAW               63:48   /* RWIVF */
+    #define INTEL_EXT_CONTEXT_ENTRY0_RESERVED_HAW_INIT            0x0   /* RWI-V */
+
+=== INTEL_EXT_CONTEXT_ENTRY1
+
+
+
+
+
+[[INTEL_EXT_CONTEXT_ENTRY1]]
+.INTEL_EXT_CONTEXT_ENTRY1 Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [2:0] AW [attr="RW"]
+* [3:3] PGE [attr="RW"]
+* [4:4] NXE [attr="RW"]
+* [5:5] WPE [attr="RW"]
+* [6:6] CD [attr="RW"]
+* [7:7] EMTE [attr="RW"]
+* [23:8] DID [attr="RW"]
+* [24:24] PSMEP [attr="RW"]
+* [25:25] SRE [attr="RW"]
+* [26:26] ERE [attr="RW"]
+* [27:27] SLEE [attr="RW"]
+* [34:32] PA0 [attr="RW"]
+* [38:36] PA1 [attr="RW"]
+* [42:40] PA2 [attr="RW"]
+* [46:44] PA3 [attr="RW"]
+* [50:48] PA4 [attr="RW"]
+* [54:52] PA5 [attr="RW"]
+* [58:56] PA6 [attr="RW"]
+* [62:60] PA7 [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [2:0] AW [attr="RW"]
+* [3:3] PGE [attr="RW"]
+* [4:4] NXE [attr="RW"]
+* [5:5] WPE [attr="RW"]
+* [6:6] CD [attr="RW"]
+* [7:7] EMTE [attr="RW"]
+* [23:8] DID [attr="RW"]
+* [24:24] PSMEP [attr="RW"]
+* [25:25] SRE [attr="RW"]
+* [26:26] ERE [attr="RW"]
+* [27:27] SLEE [attr="RW"]
+* [34:32] PA0 [attr="RW"]
+* [38:36] PA1 [attr="RW"]
+* [42:40] PA2 [attr="RW"]
+* [46:44] PA3 [attr="RW"]
+* [50:48] PA4 [attr="RW"]
+* [54:52] PA5 [attr="RW"]
+* [58:56] PA6 [attr="RW"]
+* [62:60] PA7 [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_EXT_CONTEXT_ENTRY1                       0x00000018   /* RWI8R */
+    #define INTEL_EXT_CONTEXT_ENTRY1_AW                           2:0   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY1_PGE                          3:3   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY1_NXE                          4:4   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY1_WPE                          5:5   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY1_CD                           6:6   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY1_EMTE                         7:7   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY1_DID                         23:8   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY1_PSMEP                      24:24   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY1_SRE                        25:25   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY1_ERE                        26:26   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY1_SLEE                       27:27   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY1_PA0                        34:32   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY1_PA1                        38:36   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY1_PA2                        42:40   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY1_PA3                        46:44   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY1_PA4                        50:48   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY1_PA5                        54:52   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY1_PA6                        58:56   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY1_PA7                        62:60   /* RW-VF */
+
+=== INTEL_EXT_CONTEXT_ENTRY2
+
+
+
+
+
+[[INTEL_EXT_CONTEXT_ENTRY2]]
+.INTEL_EXT_CONTEXT_ENTRY2 Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [3:0] PTS [attr="RW"]
+* [63:12] PASIDPTR [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [3:0] PTS [attr="RW"]
+* [63:12] PASIDPTR [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_EXT_CONTEXT_ENTRY2                       0x00000020   /* RWI8R */
+    #define INTEL_EXT_CONTEXT_ENTRY2_PTS                          3:0   /* RW-VF */
+    #define INTEL_EXT_CONTEXT_ENTRY2_PASIDPTR                   63:12   /* RW-VF */
+
+=== INTEL_EXT_CONTEXT_ENTRY3
+
+
+
+
+
+[[INTEL_EXT_CONTEXT_ENTRY3]]
+.INTEL_EXT_CONTEXT_ENTRY3 Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [63:12] PASIDSTPTR [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [63:12] PASIDSTPTR [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_EXT_CONTEXT_ENTRY3                       0x00000028   /* RWI8R */
+    #define INTEL_EXT_CONTEXT_ENTRY3_PASIDSTPTR                 63:12   /* RW-VF */
+
+=== INTEL_PASID_ENTRY
+
+
+
+
+
+[[INTEL_PASID_ENTRY]]
+.INTEL_PASID_ENTRY Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [0:0] P [attr="RW"]
+* [4:4] PWT [attr="RW"]
+* [5:5] PCD [attr="RW"]
+* [10:10] EAFE [attr="RW"]
+* [63:12] FLPTPTR [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [0:0] P [attr="RW"]
+* [4:4] PWT [attr="RW"]
+* [5:5] PCD [attr="RW"]
+* [10:10] EAFE [attr="RW"]
+* [63:12] FLPTPTR [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_PASID_ENTRY                              0x00000030   /* RWI8R */
+    #define INTEL_PASID_ENTRY_P                                   0:0   /* RW-VF */
+    #define INTEL_PASID_ENTRY_PWT                                 4:4   /* RW-VF */
+    #define INTEL_PASID_ENTRY_PCD                                 5:5   /* RW-VF */
+    #define INTEL_PASID_ENTRY_EAFE                              10:10   /* RW-VF */
+    #define INTEL_PASID_ENTRY_FLPTPTR                           63:12   /* RW-VF */
+
+=== INTEL_PASID_STATE_ENTRY
+
+
+
+
+
+[[INTEL_PASID_STATE_ENTRY]]
+.INTEL_PASID_STATE_ENTRY Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [47:32] AREFCNT [attr="RW"]
+* [63:63] DINV [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [47:32] AREFCNT [attr="RW"]
+* [63:63] DINV [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_PASID_STATE_ENTRY                         0x00000038  /* RWI8R */
+    #define INTEL_PASID_STATE_ENTRY_AREFCNT                      47:32  /* RW-VF */
+    #define INTEL_PASID_STATE_ENTRY_DINV                         63:63  /* RW-VF */
+
+=== INTEL_PML4E
+
+
+
+
+
+[[INTEL_PML4E]]
+.INTEL_PML4E Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [0:0] MUST_BE_ONE [attr="RW"]
+* [1:1] RW [attr="RW"]
+* [2:2] US [attr="RW"]
+* [3:3] PWT [attr="RW"]
+* [4:4] PCD [attr="RW"]
+* [5:5] A [attr="RW"]
+* [6:6] IGNORED6 [attr="RW"]
+* [9:8] IGNORED9_8 [attr="RW"]
+* [10:10] EA [attr="RW"]
+* [11:11] IGNORED11 [attr="RW"]
+* [47:12] PDPPTR [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [62:52] IGNORED62_52 [attr="RW"]
+* [63:63] XD [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [0:0] MUST_BE_ONE [attr="RW"]
+* [1:1] RW [attr="RW"]
+* [2:2] US [attr="RW"]
+* [3:3] PWT [attr="RW"]
+* [4:4] PCD [attr="RW"]
+* [5:5] A [attr="RW"]
+* [6:6] IGNORED6 [attr="RW"]
+* [9:8] IGNORED9_8 [attr="RW"]
+* [10:10] EA [attr="RW"]
+* [11:11] IGNORED11 [attr="RW"]
+* [47:12] PDPPTR [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [62:52] IGNORED62_52 [attr="RW"]
+* [63:63] XD [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_PML4E                                     0x00000040  /* RWI8R */
+    #define INTEL_PML4E_MUST_BE_ONE                                0:0  /* RWIVF */
+    #define INTEL_PML4E_MUST_BE_ONE_INIT                           0x1  /* RWI-V */
+    #define INTEL_PML4E_RW                                         1:1  /* RW-VF */
+    #define INTEL_PML4E_US                                         2:2  /* RW-VF */
+    #define INTEL_PML4E_PWT                                        3:3  /* RW-VF */
+    #define INTEL_PML4E_PCD                                        4:4  /* RW-VF */
+    #define INTEL_PML4E_A                                          5:5  /* RW-VF */
+    #define INTEL_PML4E_IGNORED6                                   6:6  /* RW-VF */
+    #define INTEL_PML4E_IGNORED9_8                                 9:8  /* RW-VF */
+    #define INTEL_PML4E_EA                                       10:10  /* RW-VF */
+    #define INTEL_PML4E_IGNORED11                                11:11  /* RW-VF */
+    #define INTEL_PML4E_PDPPTR                                   47:12  /* RW-VF */
+    #define INTEL_PML4E_RESERVED_HAW                             51:48  /* RWIVF */
+    #define INTEL_PML4E_RESERVED_HAW_INIT                          0x0  /* RWI-V */
+    #define INTEL_PML4E_IGNORED62_52                             62:52  /* RW-VF */
+    #define INTEL_PML4E_XD                                       63:63  /* RW-VF */
+
+=== INTEL_PDPE_PAGE
+
+
+
+
+
+[[INTEL_PDPE_PAGE]]
+.INTEL_PDPE_PAGE Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [0:0] MUST_BE_ONE [attr="RW"]
+* [1:1] RW [attr="RW"]
+* [2:2] US [attr="RW"]
+* [3:3] PWT [attr="RW"]
+* [4:4] PCD [attr="RW"]
+* [5:5] A [attr="RW"]
+* [6:6] D [attr="RW"]
+* [7:7] MUST_BE_ONE [attr="RW"]
+* [8:8] G [attr="RW"]
+* [9:9] IGNORED9 [attr="RW"]
+* [10:10] EA [attr="RW"]
+* [11:11] IGNORED11 [attr="RW"]
+* [12:12] PAT [attr="RW"]
+* [47:30] FRAME_1G [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [62:52] IGNORED62_52 [attr="RW"]
+* [63:63] XD [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [0:0] MUST_BE_ONE [attr="RW"]
+* [1:1] RW [attr="RW"]
+* [2:2] US [attr="RW"]
+* [3:3] PWT [attr="RW"]
+* [4:4] PCD [attr="RW"]
+* [5:5] A [attr="RW"]
+* [6:6] D [attr="RW"]
+* [7:7] MUST_BE_ONE [attr="RW"]
+* [8:8] G [attr="RW"]
+* [9:9] IGNORED9 [attr="RW"]
+* [10:10] EA [attr="RW"]
+* [11:11] IGNORED11 [attr="RW"]
+* [12:12] PAT [attr="RW"]
+* [47:30] FRAME_1G [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [62:52] IGNORED62_52 [attr="RW"]
+* [63:63] XD [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_PDPE_PAGE                                 0x00000048  /* RWI8R */
+    #define INTEL_PDPE_PAGE_MUST_BE_ONE                            0:0  /* RWIVF */
+    #define INTEL_PDPE_PAGE_MUST_BE_ONE_INIT                       0x1  /* RWI-V */
+    #define INTEL_PDPE_PAGE_RW                                     1:1  /* RW-VF */
+    #define INTEL_PDPE_PAGE_US                                     2:2  /* RW-VF */
+    #define INTEL_PDPE_PAGE_PWT                                    3:3  /* RW-VF */
+    #define INTEL_PDPE_PAGE_PCD                                    4:4  /* RW-VF */
+    #define INTEL_PDPE_PAGE_A                                      5:5  /* RW-VF */
+    #define INTEL_PDPE_PAGE_D                                      6:6  /* RW-VF */
+    #define INTEL_PDPE_PAGE_MUST_BE_ONE                            7:7  /* RWIVF */
+    #define INTEL_PDPE_PAGE_MUST_BE_ONE_INIT                       0x1  /* RWI-V */
+    #define INTEL_PDPE_PAGE_G                                      8:8  /* RW-VF */
+    #define INTEL_PDPE_PAGE_IGNORED9                               9:9  /* RW-VF */
+    #define INTEL_PDPE_PAGE_EA                                   10:10  /* RW-VF */
+    #define INTEL_PDPE_PAGE_IGNORED11                            11:11  /* RW-VF */
+    #define INTEL_PDPE_PAGE_PAT                                  12:12  /* RW-VF */
+    #define INTEL_PDPE_PAGE_FRAME_1G                             47:30  /* RW-VF */
+    #define INTEL_PDPE_PAGE_RESERVED_HAW                         51:48  /* RWIVF */
+    #define INTEL_PDPE_PAGE_RESERVED_HAW_INIT                      0x0  /* RWI-V */
+    #define INTEL_PDPE_PAGE_IGNORED62_52                         62:52  /* RW-VF */
+    #define INTEL_PDPE_PAGE_XD                                   63:63  /* RW-VF */
+
+=== INTEL_PDPE_PD
+
+
+
+
+
+[[INTEL_PDPE_PD]]
+.INTEL_PDPE_PD Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [0:0] MUST_BE_ONE [attr="RW"]
+* [1:1] RW [attr="RW"]
+* [2:2] US [attr="RW"]
+* [3:3] PWT [attr="RW"]
+* [4:4] PCD [attr="RW"]
+* [5:5] A [attr="RW"]
+* [6:6] IGNORED6 [attr="RW"]
+* [7:7] MUST_BE_ZERO [attr="RW"]
+* [9:8] IGNORED9_8 [attr="RW"]
+* [10:10] EA [attr="RW"]
+* [11:11] IGNORED11 [attr="RW"]
+* [47:12] PAGE_DIRECTORY [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [62:52] IGNORED62_52 [attr="RW"]
+* [63:63] XD [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [0:0] MUST_BE_ONE [attr="RW"]
+* [1:1] RW [attr="RW"]
+* [2:2] US [attr="RW"]
+* [3:3] PWT [attr="RW"]
+* [4:4] PCD [attr="RW"]
+* [5:5] A [attr="RW"]
+* [6:6] IGNORED6 [attr="RW"]
+* [7:7] MUST_BE_ZERO [attr="RW"]
+* [9:8] IGNORED9_8 [attr="RW"]
+* [10:10] EA [attr="RW"]
+* [11:11] IGNORED11 [attr="RW"]
+* [47:12] PAGE_DIRECTORY [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [62:52] IGNORED62_52 [attr="RW"]
+* [63:63] XD [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_PDPE_PD                                   0x00000050  /* RWI8R */
+    #define INTEL_PDPE_PD_MUST_BE_ONE                              0:0  /* RWIVF */
+    #define INTEL_PDPE_PD_MUST_BE_ONE_INIT                         0x1  /* RWI-V */
+    #define INTEL_PDPE_PD_RW                                       1:1  /* RW-VF */
+    #define INTEL_PDPE_PD_US                                       2:2  /* RW-VF */
+    #define INTEL_PDPE_PD_PWT                                      3:3  /* RW-VF */
+    #define INTEL_PDPE_PD_PCD                                      4:4  /* RW-VF */
+    #define INTEL_PDPE_PD_A                                        5:5  /* RW-VF */
+    #define INTEL_PDPE_PD_IGNORED6                                 6:6  /* RW-VF */
+    #define INTEL_PDPE_PD_MUST_BE_ZERO                             7:7  /* RWIVF */
+    #define INTEL_PDPE_PD_MUST_BE_ZERO_INIT                        0x0  /* RWI-V */
+    #define INTEL_PDPE_PD_IGNORED9_8                               9:8  /* RW-VF */
+    #define INTEL_PDPE_PD_EA                                     10:10  /* RW-VF */
+    #define INTEL_PDPE_PD_IGNORED11                              11:11  /* RW-VF */
+    #define INTEL_PDPE_PD_PAGE_DIRECTORY                         47:12  /* RW-VF */
+    #define INTEL_PDPE_PD_RESERVED_HAW                           51:48  /* RWIVF */
+    #define INTEL_PDPE_PD_RESERVED_HAW_INIT                        0x0  /* RWI-V */
+    #define INTEL_PDPE_PD_IGNORED62_52                           62:52  /* RW-VF */
+    #define INTEL_PDPE_PD_XD                                     63:63  /* RW-VF */
+
+=== INTEL_PDE_PAGE
+
+
+
+
+
+[[INTEL_PDE_PAGE]]
+.INTEL_PDE_PAGE Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [0:0] MUST_BE_ONE [attr="RW"]
+* [1:1] RW [attr="RW"]
+* [2:2] US [attr="RW"]
+* [3:3] PWT [attr="RW"]
+* [4:4] PCD [attr="RW"]
+* [5:5] A [attr="RW"]
+* [6:6] IGNORED6 [attr="RW"]
+* [7:7] MUST_BE_ZERO [attr="RW"]
+* [9:8] IGNORED9_8 [attr="RW"]
+* [10:10] EA [attr="RW"]
+* [11:11] IGNORED11 [attr="RW"]
+* [12:12] PAT [attr="RW"]
+* [47:20] FRAME_2M [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [62:52] IGNORED62_52 [attr="RW"]
+* [63:63] XD [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [0:0] MUST_BE_ONE [attr="RW"]
+* [1:1] RW [attr="RW"]
+* [2:2] US [attr="RW"]
+* [3:3] PWT [attr="RW"]
+* [4:4] PCD [attr="RW"]
+* [5:5] A [attr="RW"]
+* [6:6] IGNORED6 [attr="RW"]
+* [7:7] MUST_BE_ZERO [attr="RW"]
+* [9:8] IGNORED9_8 [attr="RW"]
+* [10:10] EA [attr="RW"]
+* [11:11] IGNORED11 [attr="RW"]
+* [12:12] PAT [attr="RW"]
+* [47:20] FRAME_2M [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [62:52] IGNORED62_52 [attr="RW"]
+* [63:63] XD [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_PDE_PAGE                                  0x00000048  /* RWI8R */
+    #define INTEL_PDE_PAGE_MUST_BE_ONE                             0:0  /* RWIVF */
+    #define INTEL_PDE_PAGE_MUST_BE_ONE_INIT                        0x1  /* RWI-V */
+    #define INTEL_PDE_PAGE_RW                                      1:1  /* RW-VF */
+    #define INTEL_PDE_PAGE_US                                      2:2  /* RW-VF */
+    #define INTEL_PDE_PAGE_PWT                                     3:3  /* RW-VF */
+    #define INTEL_PDE_PAGE_PCD                                     4:4  /* RW-VF */
+    #define INTEL_PDE_PAGE_A                                       5:5  /* RW-VF */
+    #define INTEL_PDE_PAGE_IGNORED6                                6:6  /* RW-VF */
+    #define INTEL_PDE_PAGE_MUST_BE_ZERO                            7:7  /* RWIVF */
+    #define INTEL_PDE_PAGE_MUST_BE_ZERO_INIT                       0x0  /* RWI-V */
+    #define INTEL_PDE_PAGE_IGNORED9_8                              9:8  /* RW-VF */
+    #define INTEL_PDE_PAGE_EA                                    10:10  /* RW-VF */
+    #define INTEL_PDE_PAGE_IGNORED11                             11:11  /* RW-VF */
+    #define INTEL_PDE_PAGE_PAT                                   12:12  /* RW-VF */
+    #define INTEL_PDE_PAGE_FRAME_2M                              47:20  /* RW-VF */
+    #define INTEL_PDE_PAGE_RESERVED_HAW                          51:48  /* RWIVF */
+    #define INTEL_PDE_PAGE_RESERVED_HAW_INIT                       0x0  /* RWI-V */
+    #define INTEL_PDE_PAGE_IGNORED62_52                          62:52  /* RW-VF */
+    #define INTEL_PDE_PAGE_XD                                    63:63  /* RW-VF */
+
+=== INTEL_PDE_PT
+
+
+
+
+
+[[INTEL_PDE_PT]]
+.INTEL_PDE_PT Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [0:0] MUST_BE_ONE [attr="RW"]
+* [1:1] RW [attr="RW"]
+* [2:2] US [attr="RW"]
+* [3:3] PWT [attr="RW"]
+* [4:4] PCD [attr="RW"]
+* [5:5] A [attr="RW"]
+* [6:6] IGNORED6 [attr="RW"]
+* [7:7] MUST_BE_ZERO [attr="RW"]
+* [9:8] IGNORED9_8 [attr="RW"]
+* [10:10] EA [attr="RW"]
+* [11:11] IGNORED11 [attr="RW"]
+* [47:12] PAGE_TABLE [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [62:52] IGNORED62_52 [attr="RW"]
+* [63:63] XD [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [0:0] MUST_BE_ONE [attr="RW"]
+* [1:1] RW [attr="RW"]
+* [2:2] US [attr="RW"]
+* [3:3] PWT [attr="RW"]
+* [4:4] PCD [attr="RW"]
+* [5:5] A [attr="RW"]
+* [6:6] IGNORED6 [attr="RW"]
+* [7:7] MUST_BE_ZERO [attr="RW"]
+* [9:8] IGNORED9_8 [attr="RW"]
+* [10:10] EA [attr="RW"]
+* [11:11] IGNORED11 [attr="RW"]
+* [47:12] PAGE_TABLE [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [62:52] IGNORED62_52 [attr="RW"]
+* [63:63] XD [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_PDE_PT                                   0x00000050   /* RWI8R */
+    #define INTEL_PDE_PT_MUST_BE_ONE                              0:0   /* RWIVF */
+    #define INTEL_PDE_PT_MUST_BE_ONE_INIT                         0x1   /* RWI-V */
+    #define INTEL_PDE_PT_RW                                       1:1   /* RW-VF */
+    #define INTEL_PDE_PT_US                                       2:2   /* RW-VF */
+    #define INTEL_PDE_PT_PWT                                      3:3   /* RW-VF */
+    #define INTEL_PDE_PT_PCD                                      4:4   /* RW-VF */
+    #define INTEL_PDE_PT_A                                        5:5   /* RW-VF */
+    #define INTEL_PDE_PT_IGNORED6                                 6:6   /* RW-VF */
+    #define INTEL_PDE_PT_MUST_BE_ZERO                             7:7   /* RWIVF */
+    #define INTEL_PDE_PT_MUST_BE_ZERO_INIT                        0x0   /* RWI-V */
+    #define INTEL_PDE_PT_IGNORED9_8                               9:8   /* RW-VF */
+    #define INTEL_PDE_PT_EA                                     10:10   /* RW-VF */
+    #define INTEL_PDE_PT_IGNORED11                              11:11   /* RW-VF */
+    #define INTEL_PDE_PT_PAGE_TABLE                             47:12   /* RW-VF */
+    #define INTEL_PDE_PT_RESERVED_HAW                           51:48   /* RWIVF */
+    #define INTEL_PDE_PT_RESERVED_HAW_INIT                        0x0   /* RWI-V */
+    #define INTEL_PDE_PT_IGNORED62_52                           62:52   /* RW-VF */
+    #define INTEL_PDE_PT_XD                                     63:63   /* RW-VF */
+
+=== INTEL_PTE
+
+
+
+
+
+[[INTEL_PTE]]
+.INTEL_PTE Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [0:0] MUST_BE_ONE [attr="RW"]
+* [1:1] RW [attr="RW"]
+* [2:2] US [attr="RW"]
+* [3:3] PWT [attr="RW"]
+* [4:4] PCD [attr="RW"]
+* [5:5] A [attr="RW"]
+* [6:6] IGNORED6 [attr="RW"]
+* [7:7] MUST_BE_ZERO [attr="RW"]
+* [9:8] IGNORED9_8 [attr="RW"]
+* [10:10] EA [attr="RW"]
+* [11:11] IGNORED11 [attr="RW"]
+* [47:12] FRAME_4K [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [62:52] IGNORED62_52 [attr="RW"]
+* [63:63] XD [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [0:0] MUST_BE_ONE [attr="RW"]
+* [1:1] RW [attr="RW"]
+* [2:2] US [attr="RW"]
+* [3:3] PWT [attr="RW"]
+* [4:4] PCD [attr="RW"]
+* [5:5] A [attr="RW"]
+* [6:6] IGNORED6 [attr="RW"]
+* [7:7] MUST_BE_ZERO [attr="RW"]
+* [9:8] IGNORED9_8 [attr="RW"]
+* [10:10] EA [attr="RW"]
+* [11:11] IGNORED11 [attr="RW"]
+* [47:12] FRAME_4K [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [62:52] IGNORED62_52 [attr="RW"]
+* [63:63] XD [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_PTE                                      0x00000058   /* RWI8R */
+    #define INTEL_PTE_MUST_BE_ONE                                 0:0   /* RWIVF */
+    #define INTEL_PTE_MUST_BE_ONE_INIT                            0x1   /* RWI-V */
+    #define INTEL_PTE_RW                                          1:1   /* RW-VF */
+    #define INTEL_PTE_US                                          2:2   /* RW-VF */
+    #define INTEL_PTE_PWT                                         3:3   /* RW-VF */
+    #define INTEL_PTE_PCD                                         4:4   /* RW-VF */
+    #define INTEL_PTE_A                                           5:5   /* RW-VF */
+    #define INTEL_PTE_IGNORED6                                    6:6   /* RW-VF */
+    #define INTEL_PTE_MUST_BE_ZERO                                7:7   /* RWIVF */
+    #define INTEL_PTE_MUST_BE_ZERO_INIT                           0x0   /* RWI-V */
+    #define INTEL_PTE_IGNORED9_8                                  9:8   /* RW-VF */
+    #define INTEL_PTE_EA                                        10:10   /* RW-VF */
+    #define INTEL_PTE_IGNORED11                                 11:11   /* RW-VF */
+    #define INTEL_PTE_FRAME_4K                                  47:12   /* RW-VF */
+    #define INTEL_PTE_RESERVED_HAW                              51:48   /* RWIVF */
+    #define INTEL_PTE_RESERVED_HAW_INIT                           0x0   /* RWI-V */
+    #define INTEL_PTE_IGNORED62_52                              62:52   /* RW-VF */
+    #define INTEL_PTE_XD                                        63:63   /* RW-VF */
+
+=== INTEL_SLPML4E
+
+
+
+
+
+
+[[INTEL_SLPML4E]]
+.INTEL_SLPML4E Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [0:0] R [attr="RW"]
+* [1:1] W [attr="RW"]
+* [2:2] X [attr="RW"]
+* [6:3] IGNORED6_3 [attr="RW"]
+* [9:8] IGNORED9_8 [attr="RW"]
+* [10:10] EA [attr="RW"]
+* [11:11] IGNORED11 [attr="RW"]
+* [47:12] SLPDPPTR [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [61:52] IGNORED61_52 [attr="RW"]
+* [63:63] IGNORED63 [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [0:0] R [attr="RW"]
+* [1:1] W [attr="RW"]
+* [2:2] X [attr="RW"]
+* [6:3] IGNORED6_3 [attr="RW"]
+* [9:8] IGNORED9_8 [attr="RW"]
+* [10:10] EA [attr="RW"]
+* [11:11] IGNORED11 [attr="RW"]
+* [47:12] SLPDPPTR [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [61:52] IGNORED61_52 [attr="RW"]
+* [63:63] IGNORED63 [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_SLPML4E                                  0x00000080   /* RWI8R */
+    #define INTEL_SLPML4E_R                                       0:0   /* RW-VF */
+    #define INTEL_SLPML4E_W                                       1:1   /* RW-VF */
+    #define INTEL_SLPML4E_X                                       2:2   /* RW-VF */
+    #define INTEL_SLPML4E_IGNORED6_3                              6:3   /* RW-VF */
+    #define INTEL_SLPML4E_IGNORED9_8                              9:8   /* RW-VF */
+    #define INTEL_SLPML4E_EA                                    10:10   /* RW-VF */
+    #define INTEL_SLPML4E_IGNORED11                             11:11   /* RW-VF */
+    #define INTEL_SLPML4E_SLPDPPTR                              47:12   /* RW-VF */
+    #define INTEL_SLPML4E_RESERVED_HAW                          51:48   /* RWIVF */
+    #define INTEL_SLPML4E_RESERVED_HAW_INIT                       0x0   /* RWI-V */
+    #define INTEL_SLPML4E_IGNORED61_52                          61:52   /* RW-VF */
+    #define INTEL_SLPML4E_IGNORED63                             63:63   /* RW-VF */
+
+=== INTEL_SLPDPE_PAGE
+
+
+
+
+
+[[INTEL_SLPDPE_PAGE]]
+.INTEL_SLPDPE_PAGE Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [0:0] R [attr="RW"]
+* [1:1] W [attr="RW"]
+* [2:2] X [attr="RW"]
+* [5:3] EMT [attr="RW"]
+* [6:6] IPAT [attr="RW"]
+* [7:7] MUST_BE_ONE [attr="RW"]
+* [10:8] IGNORED10_8 [attr="RW"]
+* [11:11] SNP [attr="RW"]
+* [47:30] FRAME_1GB [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [61:52] IGNORED61_52 [attr="RW"]
+* [62:62] TM [attr="RW"]
+* [63:63] IGNORED63 [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [0:0] R [attr="RW"]
+* [1:1] W [attr="RW"]
+* [2:2] X [attr="RW"]
+* [5:3] EMT [attr="RW"]
+* [6:6] IPAT [attr="RW"]
+* [7:7] MUST_BE_ONE [attr="RW"]
+* [10:8] IGNORED10_8 [attr="RW"]
+* [11:11] SNP [attr="RW"]
+* [47:30] FRAME_1GB [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [61:52] IGNORED61_52 [attr="RW"]
+* [62:62] TM [attr="RW"]
+* [63:63] IGNORED63 [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_SLPDPE_PAGE                              0x00000088   /* RWI8R */
+    #define INTEL_SLPDPE_PAGE_R                                   0:0   /* RW-VF */
+    #define INTEL_SLPDPE_PAGE_W                                   1:1   /* RW-VF */
+    #define INTEL_SLPDPE_PAGE_X                                   2:2   /* RW-VF */
+    #define INTEL_SLPDPE_PAGE_EMT                                 5:3   /* RW-VF */
+    #define INTEL_SLPDPE_PAGE_IPAT                                6:6   /* RW-VF */
+    #define INTEL_SLPDPE_PAGE_MUST_BE_ONE                         7:7   /* RWIVF */
+    #define INTEL_SLPDPE_PAGE_MUST_BE_ONE_INIT                    0x1   /* RWI-V */
+    #define INTEL_SLPDPE_PAGE_IGNORED10_8                        10:8   /* RW-VF */
+    #define INTEL_SLPDPE_PAGE_SNP                               11:11   /* RW-VF */
+    #define INTEL_SLPDPE_PAGE_FRAME_1GB                         47:30   /* RW-VF */
+    #define INTEL_SLPDPE_PAGE_RESERVED_HAW                      51:48   /* RWIVF */
+    #define INTEL_SLPDPE_PAGE_RESERVED_HAW_INIT                   0x0   /* RWI-V */
+    #define INTEL_SLPDPE_PAGE_IGNORED61_52                      61:52   /* RW-VF */
+    #define INTEL_SLPDPE_PAGE_TM                                62:62   /* RW-VF */
+    #define INTEL_SLPDPE_PAGE_IGNORED63                         63:63   /* RW-VF */
+
+=== INTEL_SLPDPE_PD
+
+
+
+
+
+[[INTEL_SLPDPE_PD]]
+.INTEL_SLPDPE_PD Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [0:0] R [attr="RW"]
+* [1:1] W [attr="RW"]
+* [2:2] X [attr="RW"]
+* [6:3] IGNORED6_3 [attr="RW"]
+* [7:7] MUST_BE_ZERO [attr="RW"]
+* [10:8] IGNORED10_8 [attr="RW"]
+* [47:12] SL_PAGE_DIRECTORY [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [61:52] IGNORED61_52 [attr="RW"]
+* [63:63] IGNORED63 [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [0:0] R [attr="RW"]
+* [1:1] W [attr="RW"]
+* [2:2] X [attr="RW"]
+* [6:3] IGNORED6_3 [attr="RW"]
+* [7:7] MUST_BE_ZERO [attr="RW"]
+* [10:8] IGNORED10_8 [attr="RW"]
+* [47:12] SL_PAGE_DIRECTORY [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [61:52] IGNORED61_52 [attr="RW"]
+* [63:63] IGNORED63 [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_SLPDPE_PD                                0x00000090   /* RWI8R */
+    #define INTEL_SLPDPE_PD_R                                     0:0   /* RW-VF */
+    #define INTEL_SLPDPE_PD_W                                     1:1   /* RW-VF */
+    #define INTEL_SLPDPE_PD_X                                     2:2   /* RW-VF */
+    #define INTEL_SLPDPE_PD_IGNORED6_3                            6:3   /* RW-VF */
+    #define INTEL_SLPDPE_PD_MUST_BE_ZERO                          7:7   /* RWIVF */
+    #define INTEL_SLPDPE_PD_MUST_BE_ZERO_INIT                     0x0   /* RWI-V */
+    #define INTEL_SLPDPE_PD_IGNORED10_8                          10:8   /* RW-VF */
+    #define INTEL_SLPDPE_PD_SL_PAGE_DIRECTORY                   47:12   /* RW-VF */
+    #define INTEL_SLPDPE_PD_RESERVED_HAW                        51:48   /* RWIVF */
+    #define INTEL_SLPDPE_PD_RESERVED_HAW_INIT                     0x0   /* RWI-V */
+    #define INTEL_SLPDPE_PD_IGNORED61_52                        61:52   /* RW-VF */
+    #define INTEL_SLPDPE_PD_IGNORED63                           63:63   /* RW-VF */
+
+=== INTEL_SLPDE_PAGE
+
+
+
+
+
+[[INTEL_SLPDE_PAGE]]
+.INTEL_SLPDE_PAGE Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [0:0] R [attr="RW"]
+* [1:1] W [attr="RW"]
+* [2:2] X [attr="RW"]
+* [5:3] EMT [attr="RW"]
+* [6:6] IPAT [attr="RW"]
+* [7:7] MUST_BE_ONE [attr="RW"]
+* [10:8] IGNORED10_8 [attr="RW"]
+* [11:11] SNP [attr="RW"]
+* [47:20] FRAME_2M [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [61:52] IGNORED61_52 [attr="RW"]
+* [62:62] TM [attr="RW"]
+* [63:63] IGNORED63 [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [0:0] R [attr="RW"]
+* [1:1] W [attr="RW"]
+* [2:2] X [attr="RW"]
+* [5:3] EMT [attr="RW"]
+* [6:6] IPAT [attr="RW"]
+* [7:7] MUST_BE_ONE [attr="RW"]
+* [10:8] IGNORED10_8 [attr="RW"]
+* [11:11] SNP [attr="RW"]
+* [47:20] FRAME_2M [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [61:52] IGNORED61_52 [attr="RW"]
+* [62:62] TM [attr="RW"]
+* [63:63] IGNORED63 [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_SLPDE_PAGE                               0x00000098   /* RWI8R */
+    #define INTEL_SLPDE_PAGE_R                                    0:0   /* RW-VF */
+    #define INTEL_SLPDE_PAGE_W                                    1:1   /* RW-VF */
+    #define INTEL_SLPDE_PAGE_X                                    2:2   /* RW-VF */
+    #define INTEL_SLPDE_PAGE_EMT                                  5:3   /* RW-VF */
+    #define INTEL_SLPDE_PAGE_IPAT                                 6:6   /* RW-VF */
+    #define INTEL_SLPDE_PAGE_MUST_BE_ONE                          7:7   /* RWIVF */
+    #define INTEL_SLPDE_PAGE_MUST_BE_ONE_INIT                     0x1   /* RWI-V */
+    #define INTEL_SLPDE_PAGE_IGNORED10_8                         10:8   /* RW-VF */
+    #define INTEL_SLPDE_PAGE_SNP                                11:11   /* RW-VF */
+    #define INTEL_SLPDE_PAGE_FRAME_2M                           47:20   /* RW-VF */
+    #define INTEL_SLPDE_PAGE_RESERVED_HAW                       51:48   /* RWIVF */
+    #define INTEL_SLPDE_PAGE_RESERVED_HAW_INIT                    0x0   /* RWI-V */
+    #define INTEL_SLPDE_PAGE_IGNORED61_52                       61:52   /* RW-VF */
+    #define INTEL_SLPDE_PAGE_TM                                 62:62   /* RW-VF */
+    #define INTEL_SLPDE_PAGE_IGNORED63                          63:63   /* RW-VF */
+
+=== INTEL_SLPDE_PT
+
+
+
+
+
+[[INTEL_SLPDE_PT]]
+.INTEL_SLPDE_PT Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [0:0] R [attr="RW"]
+* [1:1] W [attr="RW"]
+* [2:2] X [attr="RW"]
+* [6:3] IGNORED6_3 [attr="RW"]
+* [7:7] MUST_BE_ZERO [attr="RW"]
+* [10:8] IGNORED10_8 [attr="RW"]
+* [47:12] PAGE_TABLE [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [61:52] IGNORED61_52 [attr="RW"]
+* [63:63] IGNORED63 [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [0:0] R [attr="RW"]
+* [1:1] W [attr="RW"]
+* [2:2] X [attr="RW"]
+* [6:3] IGNORED6_3 [attr="RW"]
+* [7:7] MUST_BE_ZERO [attr="RW"]
+* [10:8] IGNORED10_8 [attr="RW"]
+* [47:12] PAGE_TABLE [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [61:52] IGNORED61_52 [attr="RW"]
+* [63:63] IGNORED63 [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_SLPDE_PT                                 0x000000A0   /* RWI8R */
+    #define INTEL_SLPDE_PT_R                                      0:0   /* RW-VF */
+    #define INTEL_SLPDE_PT_W                                      1:1   /* RW-VF */
+    #define INTEL_SLPDE_PT_X                                      2:2   /* RW-VF */
+    #define INTEL_SLPDE_PT_IGNORED6_3                             6:3   /* RW-VF */
+    #define INTEL_SLPDE_PT_MUST_BE_ZERO                           7:7   /* RWIVF */
+    #define INTEL_SLPDE_PT_MUST_BE_ZERO_INIT                      0x0   /* RWI-V */
+    #define INTEL_SLPDE_PT_IGNORED10_8                           10:8   /* RW-VF */
+    #define INTEL_SLPDE_PT_PAGE_TABLE                           47:12   /* RW-VF */
+    #define INTEL_SLPDE_PT_RESERVED_HAW                         51:48   /* RWIVF */
+    #define INTEL_SLPDE_PT_RESERVED_HAW_INIT                      0x0   /* RWI-V */
+    #define INTEL_SLPDE_PT_IGNORED61_52                         61:52   /* RW-VF */
+    #define INTEL_SLPDE_PT_IGNORED63                            63:63   /* RW-VF */
+
+=== INTEL_SLPTE
+
+
+
+
+
+[[INTEL_SLPTE]]
+.INTEL_SLPTE Register
+[register]
+----
+width=64
+visible_lsb=32
+visible_msb=64
+show_attr=true
+* [0:0] R [attr="RW"]
+* [1:1] W [attr="RW"]
+* [2:2] X [attr="RW"]
+* [5:3] EMT [attr="RW"]
+* [6:6] IPAT [attr="RW"]
+* [10:7] IGNORED10_7 [attr="RW"]
+* [11:11] SNP [attr="RW"]
+* [47:12] FRAME_4K [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [61:52] IGNORED61_52 [attr="RW"]
+* [62:62] TM [attr="RW"]
+* [63:63] IGNORED63 [attr="RW"]
+----
+
+
+[register]
+----
+width=64
+visible_lsb=0
+visible_msb=32
+show_attr=true
+* [0:0] R [attr="RW"]
+* [1:1] W [attr="RW"]
+* [2:2] X [attr="RW"]
+* [5:3] EMT [attr="RW"]
+* [6:6] IPAT [attr="RW"]
+* [10:7] IGNORED10_7 [attr="RW"]
+* [11:11] SNP [attr="RW"]
+* [47:12] FRAME_4K [attr="RW"]
+* [51:48] RESERVED_HAW [attr="RW"]
+* [61:52] IGNORED61_52 [attr="RW"]
+* [62:62] TM [attr="RW"]
+* [63:63] IGNORED63 [attr="RW"]
+----
+
+[source,options="nowrap"]
+    #define INTEL_SLPTE                                    0x000000A8   /* RWI8R */
+    #define INTEL_SLPTE_R                                         0:0   /* RW-VF */
+    #define INTEL_SLPTE_W                                         1:1   /* RW-VF */
+    #define INTEL_SLPTE_X                                         2:2   /* RW-VF */
+    #define INTEL_SLPTE_EMT                                       5:3   /* RW-VF */
+    #define INTEL_SLPTE_IPAT                                      6:6   /* RW-VF */
+    #define INTEL_SLPTE_IGNORED10_7                              10:7   /* RW-VF */
+    #define INTEL_SLPTE_SNP                                     11:11   /* RW-VF */
+    #define INTEL_SLPTE_FRAME_4K                                47:12   /* RW-VF */
+    #define INTEL_SLPTE_RESERVED_HAW                            51:48   /* RWIVF */
+    #define INTEL_SLPTE_RESERVED_HAW_INIT                         0x0   /* RWI-V */
+    #define INTEL_SLPTE_IGNORED61_52                            61:52   /* RW-VF */
+    #define INTEL_SLPTE_TM                                      62:62   /* RW-VF */
+    #define INTEL_SLPTE_IGNORED63                               63:63   /* RW-VF */

@@ -1,17 +1,41 @@
 = foo.ref
 Nvidia Confidential
+v0.1
 :numbered:
 :toc:
+:dump_asciidoc: foo.adoc
+:debug!:
+:insert_ref_list!:
+
+// asciidoc begin_chunk
 
 == NV_DEVICE
 
-#define NV_DEVICE                   0x0000:0x1000   /* RW--D */
+#define NV_DEVICE                     0x0000:0x1000 /* RW--D */
 
 foo register
 
-#define NV_DEVICE_FOO                          0x42 /* RWI4R */
+#define NV_DEVICE_FOO                          0x40 /* RWI4R */
 #define NV_DEVICE_FOO_BIT0                      0:0 /* RWIVF */
+#define NV_DEVICE_FOO_BIT1                      1:1 /* C-IVF */
+#define NV_DEVICE_FOO_BIT2                      2:2 /* R-IVF */
+#define NV_DEVICE_FOO_BIT3                      3:3 /* --IVF */
+#define NV_DEVICE_FOO_BIT4                      4:4 /* -WIVF */
+#define NV_DEVICE_FOO_BIT5                      5:5 /* - IVF */
+#define NV_DEVICE_FOO_BIT6                      6:6 /* xyIVF */
 #define NV_DEVICE_FOO_BIT26                   26:26 /* RWIVF */
+
+bar register
+
+#define NV_DEVICE_BAR                          0x44 /* RWI4R */
+#define NV_DEVICE_BAR_BIT0                      0:0 /* RWIVF */
+#define NV_DEVICE_BAR_BIT1                      1:1 /* C-IVF */
+#define NV_DEVICE_BAR_BIT2                      2:2 /* R-IVF */
+#define NV_DEVICE_BAR_BIT3                      3:3 /* --IVF */
+#define NV_DEVICE_BAR_BIT4                      4:4 /* -WIVF */
+#define NV_DEVICE_BAR_BIT5                      5:5 /* - IVF */
+#define NV_DEVICE_BAR_BIT6                      6:6 /* xyIVF */
+#define NV_DEVICE_BAR_BIT26                   26:26 /* RWIVF */
 
 [discrete]
 == End of document

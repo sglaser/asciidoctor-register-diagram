@@ -1,109 +1,136 @@
 = Ref File Layout
 Steve Glaser <sglaser@nvidia.com>
-v0.2, 2014-11-11 :Initial Revision
-:numbered:
-:sectnumlevels: 9
-:toc:
-:register-caption: Register %c-%(figure):{nbsp}
-:figure-caption: Figure %c-%#:{nbsp}
-:table-caption: Table %c-%#:{nbsp}
+v0.2
 
-== APPENDIX B  -  KEY
-This legend is now included from TOT/manuals/key_legend.ref`.  Any key that is marked "legacy"
-should only be used in the manual files listed in the comment.  The "legacy" keys are deprecated
-and will be phased out.
+This legend is now included from `TOT/manuals/key_legend.ref`.  Any key that is marked "legacy" should only be used in the manual files listed in the comment.  The "legacy" keys are deprecated and will be phased out.
 
-Each define in the .ref file has a 5 field code to say what kind of define it is: i.e. /* RW--R */
-The following legend shows accepted values for each of the 5 fields:
+Each `#define` in the `.ref` file has a 5 character code to say what kind of define it is (for example: `/* RW--R */`). The interpretation of each character depends on its position in the code.
 
-1. <<Read>>
+The following legend shows accepted values for each of the 5 character positions:
 
-2. <<Write>>
+[cols="1m,6"]
+|===
+| /1\..../ | <<Read>>
+| /.2\.../ | <<Write>>
+| /..3../  | <<InternalState>>
+| /\...4./ | <<DeclarationSize>>
+| /\....5/ | <<DefineIndicator>>
+|===
 
-3. <<Internal State>>
-
-4. <<Declaration/Size>>
-
-5. <<Define Indicator>>
-
-=== Read
-* `<space>` = Other Information
-* `-` = Field is part of a write-only register
-* `C` = Value read is always the same, constant value line follows (`C`)
-* `R` = Value is read
-
-=== Write
-* `<space>` = Other Information
-* `-` = Must not be written (`D`), value ignored when written (`R`,`A`,`F`)
-* `W` = Can be written
-
-=== Internal State
-* `<space>` = Other Information
-* `-` = No internal state
-* `X` = Internal state, initial value is unknown
-* `I` = Internal state, initial value is known and follows <<Reset Signal>> `I`
-* `E` = Internal state, initial value is known and follows <<Reset Signal>> `E`
-* `B` = Internal state, initial value is known and follows <<Reset Signal>> `B`
-* `C` = Internal state, initial value is known and follows <<Reset Signal>> `C`
-* `V` = (legacy) Internal state, initialize at volatile reset
-  (legacy: Only used in `internal_bundles.ref`)
-
-* `D` = (legacy) Internal state, default initial value at object creation
-  (legacy: Only used in `dev_ram.ref`)
-
-* `C` = (legacy) Internal state, initial value at object creation
-  (legacy:  Only used in `usr_2074.ref`)
-
-* `C` = (legacy) Internal state, class-based initial value at object creation
-  (legacy: Only used in `dev_ram.ref`)
-
-=== Declaration/Size
-* `<space>` = Other Information
-* `-` = Does Not Apply
-* `V` = Type is void
-* `U` = Type is unsigned integer
-* `S` = Type is signed integer
-* `F` = Type is IEEE floating point
-* `1` = Byte size (008)
-* `2` = Short size (016)
-* `3` = Three byte size (024)
-* `4` = Word size (032)
-* `8` = Double size (064)
+== Read -- `/1.\.../`
 
 
-=== Define Indicator
-* `<space>` = Other Information
-* `C` = Clear value
-* `D` = Device
-* `L` = Logical device.  Used by ness/nvm for manuals replication
-* `M` = Memory
-* `R` = Register
-* `A` = Array of Registers
-* `F` = Field
-* `V` = Value
-* `T` = Task
-* `P` = Phantom Register
+[[Read]]
+.Read
+[cols="1m,6",options="header"]
+|===
+| Character | Meaning
+|   `-`     | Field is part of a write-only register
+|   `C`     | Value can be read and will always return the same, constant value line follows `C`
+|   `R`     | Value can be read
+|===
 
-* `B` = (legacy) Bundle address
-  (legacy: Only used in `gr_bundles.ref` and `internal_bundles.ref`)
+== Write -- `/.2.\.../`
 
-* `G` = (legacy) General purpose configuration register
-  (legacy: Only used in `dev_disp.ref`, `dev_mmu.ref`, `dev_pmu_vmacro.ref`,
-  `dev_pwr_pmu_plus.ref`, `dev_ram.ref`, `dev_uvm.ref`, `usr_2074.ref`, `usr_motionsearch.ref`)
+[[Write]]
+.Write
+[cols="1m,6",options="header"]
+|===
+| Character | Meaning
+| <space>   | Other Information
+|   `-`     | If <<DefineIndicator>> is `D`: Field cannot be written. If <<DefineIndicator>> is `R`, `A`, or `F`: Writes to field are ignored.
+|   `W`     | Can be written
+|===
 
-* `C` = (legacy) Class
-  (legacy: Only used in `dev_ram.ref` and `usr_*.ref`)
 
-=== Reset Signal
+== Internal State -- `/..3../`
+
+[[InternalState]]
+.Internal State
+[cols="1m,2,4,4m",options="header"]
+|===
+| Character | Internal State | Meaning | Legacy Usage
+|  <space>  | No  | Other Information |
+|    `-`    | No  | |
+|    `X`    | Yes | Initial value is unknown |
+|    `I`    | Yes | Initial value is known and follows [ResetSignal] `I` |
+|    `E`    | Yes | Initial value is known and follows [ResetSignal] `E` |
+|    `B`    | Yes | Initial value is known and follows [ResetSignal] `B` |
+|    `C`    | Yes | Initial value is known and follows [ResetSignal] `C` a| _(also see legacy use below)_
+|    `C`    | Yes | Initial value at object creation | usr_2074.ref
+|    `C`    | Yes | Class-based initial value at object creation | dev_ram.ref
+|    `V`    | Yes | Initialize at volatile reset | internal_bundles.ref
+|    `D`    | Yes | Default initial value at object creation | dev_ram.ref
+|===
+
+
+== Declaration/Size -- `/\...4./`
+
+[[DeclarationSize]]
+.Declaration/Size
+[cols="1m,4",options="header"]
+|===
+| Character | Meaning
+| <space>   | Other Information
+|   `-`     | Does Not Apply
+|   `V`     | Type is void
+|   `U`     | Type is unsigned integer
+|   `S`     | Type is signed integer
+|   `F`     | Type is IEEE floating point
+|   `1`     | Byte size (008)
+|   `2`     | Short size (016)
+|   `3`     | Three byte size (024)
+|   `4`     | Word size (032)
+|   `8`     | Double size (064)
+|===
+
+
+== Define Indicator -- `/\....5/`
+
+[[DefineIndicator]]
+.Define Indicator
+[cols="1m,6,3m",options="header"]
+|===
+| Character | Meaning | Legacy Usage
+| <space>   | Other Information |
+|   `-`     | Does Not Apply |
+|   `C`     | Clear value a| _(also see legacy use below)_
+|   `D`     | Device |
+|   `L`     | Logical device.  Used by ness/nvm for manuals replication |
+|   `M`     | Memory |
+|   `R`     | Register |
+|   `A`     | Array of Registers |
+|   `F`     | Field |
+|   `V`     | Value |
+|   `T`     | Task |
+|   `P`     | Phantom Register |
+|   `B`     | _Legacy: Bundle address_ | gr_bundles.ref, internal_bundles.ref
+
+|   `C`     | _Legacy: General purpose configuration register_ | dev_disp.ref, dev_mmu.ref, dev_pmu_vmacro.ref, dev_pwr_pmu_plus.ref, dev_ram.ref, dev_uvm.ref, usr_2074.ref, usr_motionsearch.ref
+|   `C`     | _Legacy: Class_ | dev_ram.ref, usr_*.ref
+|===
+
+
+== Reset Signal
+
+=== Default Reset Signals for graphics engine
 
 All graphics engine registers use the following defaults for reset signals:
 
-* `E` = initialized with `engine_reset_`
-* `I` = initialized with `context_reset_`
-* `B` = initialized with `reset_IB_dly_`
-* `C` = initialized with _???_
+[[ResetSignal]]
+.Reset Signal
+[cols="1m,6m",options="header"]
+|===
+| Character | Reset Signal
+|    `E`    | engine_reset_
+|    `I`    | context_reset_
+|    `B`    | reset_IB_dly_
+|    `C`    | ???
+|===
+
+=== Exceptions to default Reset Signals
 
 For units that differ from the graphics engine defaults, the reset signals should be defined here:
 
-* none
+* None
 

@@ -38,7 +38,7 @@ module Asciidoctor
         @value = try_default(raw, :value, nil)
         @add_class = try_default(raw, :add_class, '')
         if key.nil? || key == ''
-          @key = (@is_unused ? '_unused' : 'field') + "_#{@msb}_#{@lsb}"
+          @key = (@is_unused ? 'unused' : 'field') + " [#{@msb}:#{@lsb}]"
         else
           @key = key
         end
@@ -411,6 +411,7 @@ module Asciidoctor
 
         @field_array.each_index do |b|
           f = @field_array[b]
+          next if f.lsb >= @visible_msb || f.msb < @visible_lsb
           if (!f.nil?) && (b == f.lsb)
             g = HtmlElement.new('g', {:class => "regFieldInternal regAttr_#{f.attr} regLink"})
 
@@ -462,14 +463,14 @@ module Asciidoctor
                                  [f.msb.to_s])
               end
               for i in (f.lsb + 1)..(f.msb - 1)
-                if (i % 8) == 0
+                if (i % 8) == 0 && i < @visible_msb && i >= @visible_lsb
                   g.append_element('text',
                                    {:x => middle_of(i),
                                     :y => @cell_top - 4,
                                     :class => 'regBitNumMiddle'},
                                    [i.to_s])
                 end
-                if (i % 8) == 7
+                if (i % 8) == 7 && i < @visible_msb && i >= @visible_lsb
                   g.append_element('text',
                                    {:x => middle_of(i),
                                     :y => @cell_top - 4,
@@ -859,15 +860,15 @@ figure pre.json {
         lines.each do |line|
           next if /^\s*(#|\/\/)/.match(line)
           if (m = /^\s*(['"]?)(\w+)\1\s*=\s*(['"]?)(.*)\3\s*((#|\/\/).*)?$/.match(line))
-            puts "matched #1 #{line} match #{m}" if debug > 1
+            puts "matched #1 #{line} match '#{m}'" if debug > 1
             raw[m[2].intern] = m[4]
-            puts "raw=#{raw}" if debug > 1
+            puts "raw='#{raw}'" if debug > 1
           elsif (m = /^\s*\*\s*(\[\s*((?<msb>\d+)\s*:)?\s*(?<lsb>\d+)\s*\])?\s*(?<quote>['"]?)(?<field>[-\/|*%$@&\[\]{}()!\w #]+)\k<quote>\s*(\[(?<options>.*)\])?\s*((#|\/\/).*)?$/.match(line))
             puts "matched #2 '#{line}' match '#{m}'" if debug > 1
             opts = {}
             unless m[:options].nil?
               temp = m[:options].split(',')
-              puts "temp=#{temp}" if debug > 1
+              puts "temp='#{temp}'" if debug > 1
               temp.each do |item|
                 if (m2 = /\s*(?<quote>['"]?)(?<option>\w+)\k<quote>\s*(=\s*(?<quote2>['"]?)(?<option_value>.*)\k<quote2>)?\s*((#|\/\/).*)?$/.match(item))
                   puts "matched #3 '#{line}' match '#{m2}'" if debug > 1
@@ -880,12 +881,12 @@ figure pre.json {
                   end
                   opts[m2[:option].intern] = val
                 else
-                  puts "parse_blockdiag invalid option #{item}" if debug > 0
-                  raise "parse_blockdiag invalid option #{item}"
+                  puts "parse_blockdiag invalid option '#{item}'" if debug > 0
+                  raise "parse_blockdiag invalid option '#{item}'"
                 end
               end
             end
-            puts "opts=#{opts} m[lsb]=#{m['lsb']} m[msb]=#{m['msb']}" if debug > 1
+            puts "opts=#{opts} m[lsb]='#{m['lsb']}' m[msb]='#{m['msb']}'" if debug > 1
             if m[:lsb].nil? || m[:lsb] == ''
               opts[:lsb] = next_lsb
               opts[:msb] = next_lsb + (opts[:len] || 1).to_i - 1
@@ -898,7 +899,7 @@ figure pre.json {
               end
             end
             next_lsb = opts[:msb] + 1
-            puts "opts=#{opts}" if debug > 1
+            puts "opts='#{opts}'" if debug > 1
             fname = m[:field].intern
             opts[:orig_name] = fname
             if raw[:fields][fname].nil?
@@ -911,12 +912,12 @@ figure pre.json {
               raw[:fields]["#{fname}_#{fname_index}"] = opts
             end
           else
-            puts "parse_blockdiag unrecognized line #{line}" if debug > 0
-            raise "parse_blockdiag unrecognized line #{line}"
+            puts "parse_blockdiag unrecognized line '#{line}'" if debug > 0
+            raise "parse_blockdiag unrecognized line '#{line}'"
           end
         end
 
-        puts "parse_blockdiag: returning #{raw}" if debug > 0
+        puts "parse_blockdiag: returning '#{raw}'" if debug > 0
         raw
       end
 
