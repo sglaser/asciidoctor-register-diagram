@@ -3,11 +3,9 @@ all: html
 both: clean html
 
 clean:
-#	-rm register-diagram.html foo.html intel.html dev_nvl_tb_trim.html
-	-rm register-diagram.html foo.html intel.html
+	-rm register-diagram.html foo.html intel.html dev_nvl_tb_trim.html
 
-#html: register-diagram.html foo.html intel.html ref-file-instructions.html dev_nvl_tb_trim.html
-html: register-diagram.html foo.html intel.html ref-file-instructions.html
+html: register-diagram.html foo.html intel.html ref-file-instructions.html dev_nvl_tb_trim.html
 
 register-diagram.html: register-diagram.adoc Makefile lib/asciidoctor-register-diagram.rb lib/asciidoctor-ref-diagram.rb lib/version.rb lib/asciidoc-register-diagram.css
 	asciidoctor --trace -I ./lib -r asciidoctor-register-diagram.rb -d book register-diagram.adoc
